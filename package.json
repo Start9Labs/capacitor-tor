@@ -1,7 +1,7 @@
 {
-  "name": "tor-client-plugin",
+  "name": "capacitor-tor-client",
   "version": "0.0.2",
-  "description": "tor client",
+  "description": "tor client for the capacitor/ionic ecosystem",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
