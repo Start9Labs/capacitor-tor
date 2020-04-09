@@ -1,0 +1,9 @@
+ControlPort auto
+DisableNetwork 0
+
+RunAsDaemon 1
+SafeSocks 1
+SOCKSPort 59590
+
+Socks5ProxyUsername username
+Socks5ProxyPassword password

@@ -1,0 +1,56 @@
+{
+  "name": "tor-client-plugin",
+  "version": "0.0.2",
+  "description": "tor client",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "scripts": {
+    "sbuild": "npm run build && pod lib lint --allow-warnings",
+    "build": "npm run clean && tsc",
+    "clean": "rimraf ./dist",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build",
+    "test": "jest"
+  },
+  "author": "AGSpan",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/core": "latest",
+    "@types/node": "^13.9.5"
+  },
+  "devDependencies": {
+    "@capacitor/android": "latest",
+    "@capacitor/ios": "latest",
+    "@types/jest": "^25.1.4",
+    "jest": "^25.2.3",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.2.4"
+  },
+  "files": [
+    "dist/",
+    "ios/",
+    "android/",
+    "TorClientPlugin.podspec"
+  ],
+  "keywords": [
+    "capacitor",
+    "plugin",
+    "native"
+  ],
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    },
+    "android": {
+      "src": "android"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Start9Labs/capaciTor1.git"
+  },
+  "bugs": {
+    "url": "git@github.com:Start9Labs/capaciTor1.git/issues"
+  }
+}

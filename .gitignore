@@ -1,0 +1,26 @@
+dist
+node_modules
+android/build
+android/gen
+android/out
+android/.gradle
+android/*.class
+android/*.apk
+android/*.dex
+android/.navigation
+android/captures
+android/.idea
+android/*.iml
+android/.externalNativeBuild
+android/.settings
+
+*.log
+
+ios/Pods 
+#-- Need Tor.Framework
+!ios/Pods/Tor.framework
+ios/build
+*.xcuserdata
+*.xcuserdatad
+*.xcbkptlist
+ios/.DS_Store
