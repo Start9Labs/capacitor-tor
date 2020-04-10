@@ -1,6 +1,8 @@
 # capacitor-tor-client
 A client capable of making requests over the Tor network for IOS and Android. *Web is not yet supported.*
 
+WIP (only GET requests, no https)
+
 To install into your ionic project: 
 ```
 $ npm i --save capacitor-tor-client
