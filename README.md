@@ -1,5 +1,5 @@
 # capacitor-tor-client
-A client capable of making requests over the Tor network for IOS and Android. *Web is not yet supported.*
+A client capable of making JSON api requests over the Tor network for IOS and Android. *Web is not yet supported.*
 
 WIP (only GET requests, no https)
 
