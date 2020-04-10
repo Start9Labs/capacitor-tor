@@ -48,4 +48,4 @@ export class Tab1Page {
 }
 ```
 
-We use the javascript capacitor plugin import syntax `import { TorClient, HttpVerb } from 'tor-client-plugin';` to get typescript type safety in the Ionic code. 
+We use the javascript capacitor plugin import syntax `import { TorClient, HttpVerb } from 'capacitor-tor-client';` to get typescript type safety in the Ionic code. 
