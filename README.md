@@ -19,7 +19,7 @@ Sample use in an ionic app:
 
 ```
 import { Component } from '@angular/core';
-import { TorClient, HttpVerb } from 'capacitor-tor-client';
+import { TorClient, HttpVerb, JSON_ } from 'capacitor-tor-client';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -28,7 +28,7 @@ import { TorClient, HttpVerb } from 'capacitor-tor-client';
 export class Tab1Page {
   private readonly torClient = new TorClient();
 
-  torReply: object;
+  torReply: JSON_;
 
   constructor() {
   }
