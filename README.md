@@ -1,11 +1,23 @@
 # capacitor-tor-client
 A client capable of making requests over the Tor network for IOS and Android. *Web is not yet supported.*
 
+To install into your ionic project: 
+```
+$ npm i --save capacitor-tor-client
+$ npx cap update
+
+... add module into the typescript how you like ...
+
+$ ionic build
+$ npx cap sync
+$ npx cap open ios && npx cap open android
+```
+
 Sample use in an ionic app:
 
 ```
 import { Component } from '@angular/core';
-import { TorClient, HttpVerb } from 'tor-client-plugin';
+import { TorClient, HttpVerb } from 'capacitor-tor-client';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
