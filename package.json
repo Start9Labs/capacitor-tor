@@ -31,7 +31,7 @@
     "dist/",
     "ios/",
     "android/",
-    "TorClientPlugin.podspec"
+    "CapacitorTorClient.podspec"
   ],
   "keywords": [
     "capacitor",
@@ -48,9 +48,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Start9Labs/capaciTor1.git"
+    "url": "git@github.com:Start9Labs/capacitor-tor-client.git"
   },
   "bugs": {
-    "url": "git@github.com:Start9Labs/capaciTor1.git/issues"
+    "url": "git@github.com:Start9Labs/capacitor-tor-client.git/issues"
   }
 }
