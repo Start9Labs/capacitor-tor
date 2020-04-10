@@ -16,9 +16,9 @@ android/.settings
 
 *.log
 
-ios/Pods 
+ios/Pods/* 
 #-- Need Tor.Framework
-!ios/Pods/Tor.framework
+!ios/Pods/Tor.framework/
 ios/build
 *.xcuserdata
 *.xcuserdatad
