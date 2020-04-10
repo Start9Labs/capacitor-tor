@@ -47,7 +47,7 @@ public final class Rest: NSObject, URLSessionDelegate {
                 if let data = data {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data, options: [])
-                        completion(.success(json as! Dictionary<String, Any>))
+                        completion(.success(["body": json]))
                     } catch {
                         completion(.failure(.anyerror(description: "invalid json returned from api")))
                     }

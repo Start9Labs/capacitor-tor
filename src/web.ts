@@ -1,5 +1,5 @@
 import { Plugins } from '@capacitor/core'
-import { TorClientPlugin, HttpRequest, JSON_ } from './definitions'
+import { TorClientPlugin, HttpRequest } from './definitions'
 const { TorClientPlugin : TorNative } = Plugins;
 
 // Provides TS type safety for calling code.
@@ -11,7 +11,7 @@ export class TorClient implements TorClientPlugin {
     return TorNative.initTor()
   }
 
-  sendReq (req: HttpRequest): Promise<JSON_> {    
+  sendReq (req: HttpRequest): Promise<any> {    
     if(!req.path.startsWith('/')) req.path = '/' + req.path
     return TorNative.sendReq(req)
   }
