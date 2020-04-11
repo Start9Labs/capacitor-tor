@@ -16,7 +16,7 @@ $ npx cap open ios && npx cap open android
 ```
 
 You MUST also add the following lines to the `build.gradle` within your `android` folder:
-1. In the dependencies section include this line: `implementation 'org.torproject:tor-android-binary:0.4.2.5'
+1. In the dependencies section include this line: `implementation 'org.torproject:tor-android-binary:0.4.2.5'`
 1. In the repositories section include this line: `maven { url "https://raw.githubusercontent.com/guardianproject/gpmaven/master" }`
 
 Sample use in an ionic app:
