@@ -49,7 +49,12 @@ public class TorClientPlugin extends Plugin {
     }
 
     @PluginMethod()
-    public void sendReq(PluginCall call) throws IOException, JSONException {
+    public void connect(PluginCall call) {
+    }
+
+
+    @PluginMethod()
+    public void send(PluginCall call) throws IOException, JSONException {
         String path = call.getData().getString("path"); // Path should have leading '/'
         String verb = call.getData().getString("verb");
         String host = call.getData().getString("host");
@@ -90,11 +95,8 @@ public class TorClientPlugin extends Plugin {
         call.success(responseBody);
     }
 
-    @PluginMethod()
-    public void sendVanillaReq(PluginCall call) throws IOException {
-        JSObject ret = new JSObject();
-        ret.put("value", 0);
-        call.success(ret);
+    @PluginMethod
+    public void recv(PluginCall call) {
     }
 }
 

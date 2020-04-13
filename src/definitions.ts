@@ -5,23 +5,10 @@ declare module "@capacitor/core" {
   }
 }
 
-export enum HttpVerb {
-  GET="GET", 
-  POST="POST", 
-  PUT="PUT", 
-  PATCH="PATCH", 
-  DELETE="DELETE"
-}
-
-export interface HttpRequest {
-  host: string
-  path: string
-  port: number
-  verb: HttpVerb
-  data?: Object
-}
-
 export interface TorClientPlugin {
   initTor(): Promise<void>;
-  sendReq(req: HttpRequest): Promise<any>;
+  connect(): Promise<number>;
+  send(socketfd: number, buf: string, buflen: number): Promise<number>;
+  recv(socketfd: number, maxlen: number): Promise<string>;
+  close(socketfd: number): Promise<void>;
 }

@@ -11,5 +11,6 @@
     s.ios.deployment_target  = '11.0'
     s.dependency 'Capacitor'
     s.dependency 'ReachabilitySwift', '~> 3'
+    s.dependency 'BlueSocket'
     s.vendored_frameworks = 'ios/Pods/Tor.framework'
   end

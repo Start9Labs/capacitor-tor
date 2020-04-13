@@ -1,4 +1,6 @@
 ControlPort auto
+CookieAuthentication 1
+
 DisableNetwork 0
 
 RunAsDaemon 1
