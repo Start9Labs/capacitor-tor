@@ -7,7 +7,7 @@ declare module "@capacitor/core" {
 
 export interface TorClientPlugin {
   initTor(): Promise<void>;
-  connect(): Promise<number>;
+  connect(host: string, port: number): Promise<number>;
   send(socketfd: number, buf: string, buflen: number): Promise<number>;
   recv(socketfd: number, maxlen: number): Promise<string>;
   close(socketfd: number): Promise<void>;
