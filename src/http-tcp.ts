@@ -57,11 +57,12 @@ function headersText<method extends Method>(headers: Headers<method>): string[] 
     })
 }
 
+//@TODO automate content-length calculation in the headers.
 export function httpToTcpBuf<method extends Method>(
     method: method, 
     path: string, 
     headers: Headers<method>, 
-    body: method extends ('POST' | 'PUT' | 'PATCH') ? string : undefined
+    body: method extends ('POST' | 'PUT' | 'PATCH') ? (string | undefined) : undefined
 ): string {
     return [].concat(
         initialText(method, path), //1
