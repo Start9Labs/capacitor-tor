@@ -24,3 +24,5 @@ ios/build
 *.xcuserdatad
 *.xcbkptlist
 ios/.DS_Store
+
+.vscode

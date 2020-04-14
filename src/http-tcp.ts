@@ -42,9 +42,6 @@ export type BodyHeaders = BaseHeaders
     &  { "Content-Type"?: string      }  // mime-type
     &  { "Transfer-Encoding"?: string }  // if not identity, then 'chunked' is used to calculate message-length, not content-length. content-length still required?
 
-// The presence of a message-body in a request is signaled by the
-//    inclusion of a Content-Length or Transfer-Encoding header field in
-//    the request's message-headers.
 
 const CRLF = "\r\n"
 
@@ -54,7 +51,7 @@ const CRLF = "\r\n"
 //@TODO best practice to have general headers, then request/response headers, then entity headers. 4.2
 function headersText<method extends Method>(headers: Headers<method>): string[] {
     return Object.entries(headers).map( ([k,v]) => {
-        //"The field value MAY be preceded by any amount of LWS, though a single SP is preferred."" 4.2
+        //"The field value MAY be preceded by any amount of LWS, though a single SP is preferred." 4.2
         //"Such leading or trailing LWS MAY be removed without changing the semantics of the field value." 4.2
         return `${k}: ${v.trim()}${CRLF}` 
     })
@@ -64,7 +61,7 @@ export function httpToTcpBuf<method extends Method>(
     method: method, 
     path: string, 
     headers: Headers<method>, 
-    body?: string
+    body: method extends ('POST' | 'PUT' | 'PATCH') ? string : undefined
 ): string {
     return [].concat(
         initialText(method, path), //1
