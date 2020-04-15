@@ -1,7 +1,7 @@
 # capacitor-tor-client
-A client capable of making JSON api requests over the Tor network for IOS and Android. *Web is not yet supported.*
+A plugin capable of starting (and stopping) an instance of tor on your mobile device. This includes spinning up a SOCK5H proxy server which can proxy http requests through the tor network (including targeting V3 onion urls).
 
-WIP (only GET requests, no https)
+WIP
 
 To install into your ionic project: 
 ```
@@ -52,8 +52,6 @@ import { TorClient, HttpVerb, JSON_ } from 'capacitor-tor-client';
 export class Tab1Page {
   private readonly torClient = new TorClient();
 
-  torReply: JSON_;
-
   constructor() {
   }
 
@@ -62,16 +60,7 @@ export class Tab1Page {
     await this.torClient.initTor();
     console.log(`Tor Daemon initialized.`);
   }
-
-  async testTorClient() {
-    this.torReply = await this.torClient.sendReq({
-      verb: HttpVerb.GET,
-      host: '<your-favorite-hidden-service>.onion',
-      port: 80,
-      path: '/'
-    });
-  }
 }
 ```
 
-We use the javascript capacitor plugin import syntax `import { TorClient, HttpVerb } from 'capacitor-tor-client';` to get typescript type safety in the Ionic code. 
+We use the javascript capacitor plugin import syntax `import { TorClient } from 'capacitor-tor-client';` to get typescript type safety in the Ionic code. 
