@@ -3,6 +3,8 @@ package tor.client.plugin;
 //import android.os.Build;
 //import android.support.annotation.RequiresApi;
 
+import android.net.Proxy;
+
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
@@ -43,6 +45,7 @@ public class TorClientPlugin extends Plugin {
 
         // Need in an in code way of configuring the port. Right now this is hardcoded into the torrc file
         torSocksProxy = new Socks5(new InetSocketAddress("localhost",59590), "username", "password");
+
         JSObject ret = new JSObject();
         ret.put("value", 0);
         call.success(ret);
