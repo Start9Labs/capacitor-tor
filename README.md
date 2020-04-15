@@ -16,8 +16,28 @@ $ npx cap open ios && npx cap open android
 ```
 
 You MUST also add the following lines to the `build.gradle` within your `android` folder:
-1. In the dependencies section include this line: `implementation 'org.torproject:tor-android-binary:0.4.2.5'`
-1. In the repositories section include this line: `maven { url "https://raw.githubusercontent.com/guardianproject/gpmaven/master" }`
+1. In the 'dependencies:{ ... }' section include this line: `implementation 'org.torproject:tor-android-binary:0.4.2.5'`
+1. In the 'repositories:{ ... }' section include this line: `maven { url "https://raw.githubusercontent.com/guardianproject/gpmaven/master" }`
+as well as edit your android 'android/app/src/main/java/.../MainActivity.java'
+
+```
+...
+import tor.client.plugin.TorClientPlugin;
+
+public class MainActivity extends BridgeActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    // Initializes the Bridge
+    this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
+      // Additional plugins you've installed go here
+       add(TorClientPlugin.class);
+    }});
+  }
+}
+
+```
 
 Sample use in an ionic app:
 
