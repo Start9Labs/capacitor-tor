@@ -11,20 +11,20 @@ export class TorClient implements TorClientPlugin {
     return TorNative.initTor()
   }
 
-  connect(): Promise<number> {
-    return TorNative.connect()
+  connect(host: string, port: number): Promise<number> {
+    return TorNative.connect({ host, port }).then(a => a.socketfd)
   }
 
   send(socketfd: number, buf: string, buflen: number): Promise<number> {
-    return TorNative.send(socketfd, buf, buflen)
+    return TorNative.send({ socketfd, buf, buflen }).then(a => a.bytessent)
   }
 
   recv(socketfd: number, maxlen: number): Promise<string> {
-    return TorNative.send(socketfd, maxlen)
+    return TorNative.recv({ socketfd, maxlen }).then(a => a.bytes)
   }
 
   close(socketfd: number): Promise<void> {
-    return TorNative.connect(socketfd)
+    return TorNative.close({ socketfd })
   }
 
 

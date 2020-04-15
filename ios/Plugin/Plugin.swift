@@ -66,6 +66,16 @@ public class TorClientPlugin: CAPPlugin {
     }
     
     @objc func connect(_ call: CAPPluginCall) {
+        guard let host = call.getString("host") else {
+            call.reject("Must include host")
+            return
+        }
+        
+        guard let port = call.getInt("port") else {
+            call.reject("Must include port")
+            return
+        }
+        
         // open socket
         guard let socket = try? Socket.create(family: .inet, type: .stream, proto: .tcp) else {
             call.reject("Could not create socket")
@@ -105,14 +115,54 @@ public class TorClientPlugin: CAPPlugin {
         print("greetResp: \(greetResp)")
         
         // send client connection request
+        do {
+            var clientConnect: [UInt8] = [0x05, 0x01, 0x00, 0x03]
+            clientConnect.append(UInt8(host.lengthOfBytes(using: .utf8)))
+            let data = NSMutableData(bytes: clientConnect, length: clientConnect.count)
+            data.append(host.data(using: .utf8)!)
+            data.append(withUnsafeBytes(of: UInt16(port).bigEndian, { Data($0) }))
+            print("clientConnect: \(data)")
+            try socket.write(from: data)
+        } catch {
+            call.reject("Could not send socks5 client connection request")
+            return
+        }
         
         // read server response grant, the connection is now ready.
+        guard let clientResp = NSMutableData.init(capacity: 10) else {
+            call.reject("Could not allocate client response buffer")
+            return
+        }
+        guard let n2 = try? socket.read(into: clientResp) else {
+            call.reject("Could not read from socket into client response buffer")
+            return
+        }
+        print("n2: \(n2)")
+        print("clientResp: \(clientResp)")
         
         call.resolve(["socketfd": socket.socketfd])
     }
     
     @objc func send(_ call: CAPPluginCall) {
-        call.resolve()
+        guard let socketfd = call.getInt("socketfd") else {
+            call.reject("send: Must provide 'socketfd: int32'")
+            return
+        }
+        guard let socket = self.fdTable[Int32(socketfd)] else {
+            call.reject("send: Invalid socket descriptor: \(socketfd)")
+            return
+        }
+        guard let buf = call.getString("buf") else {
+            call.reject("send: Must include buf")
+            return
+        }
+        guard let buflen = call.getInt("buflen") else {
+            call.reject("send: Must include buflen")
+            return
+        }
+        // base64 decode?
+        // socket.write()
+        call.resolve(["bytessent": 0])
     }
     
     @objc func recv(_ call: CAPPluginCall) {
