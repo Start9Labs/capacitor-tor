@@ -1,7 +1,7 @@
 {
-  "name": "capacitor-tor-client",
-  "version": "0.0.7",
-  "description": "tor client for the capacitor/ionic ecosystem",
+  "name": "capacitor-tor",
+  "version": "0.0.8",
+  "description": "tor plugin for the capacitor",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
@@ -31,7 +31,7 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorTorClient.podspec"
+    "CapacitorTor.podspec"
   ],
   "keywords": [
     "capacitor",
@@ -48,9 +48,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Start9Labs/capacitor-tor-client.git"
+    "url": "git@github.com:Start9Labs/capacitor-tor.git"
   },
   "bugs": {
-    "url": "git@github.com:Start9Labs/capacitor-tor-client.git/issues"
+    "url": "git@github.com:Start9Labs/capacitor-tor.git/issues"
   }
 }

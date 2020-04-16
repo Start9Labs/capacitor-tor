@@ -1,5 +1,5 @@
 
-package tor.client.plugin.torinstaller;
+package tor.plugin.torinstaller;
 
 import android.content.Context;
 import android.os.Build;

@@ -1,7 +1,7 @@
 /* Copyright (c) 2009, Nathan Freitas, Orbot / The Guardian Project - http://openideals.com/guardian */
 /* See LICENSE for licensing information */
 
-package tor.client.plugin.torinstaller;
+package tor.plugin.torinstaller;
 
 public interface TorServiceConstants {
 
