@@ -7,8 +7,8 @@ import Tor
  * Please read the Capacitor iOS Plugin Development Guide
  * here: https://capacitor.ionicframework.com/docs/plugins/ios
  */
-@objc(TorClientPlugin)
-public class TorClientPlugin: CAPPlugin {
+@objc(TorPlugin)
+public class TorPlugin: CAPPlugin {
     var onionConnector: OnionManager? = nil
     var urlSessionConfiguration: URLSessionConfiguration? = nil
     var restClient: Rest? = nil

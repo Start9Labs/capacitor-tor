@@ -1,4 +1,4 @@
-package tor.client.plugin;
+package tor.plugin;
 
 import java.io.BufferedReader;
 import java.io.IOException;

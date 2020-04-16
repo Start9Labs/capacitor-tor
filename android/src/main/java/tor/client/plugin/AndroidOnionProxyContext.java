@@ -11,7 +11,7 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache 2 License for the specific language governing permissions and limitations under the License.
 */
 
-package tor.client.plugin;
+package tor.plugin;
 
 import android.content.Context;
 
@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import tor.client.plugin.torinstaller.TorResourceInstaller;
+import tor.plugin.torinstaller.TorResourceInstaller;
 
 import static android.content.Context.MODE_PRIVATE;
 

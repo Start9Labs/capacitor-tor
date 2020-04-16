@@ -12,7 +12,7 @@ See the Apache 2 License for the specific language governing permissions and lim
 */
 
 
-package tor.client.plugin;
+package tor.plugin;
 
 import java.util.concurrent.TimeUnit;
 

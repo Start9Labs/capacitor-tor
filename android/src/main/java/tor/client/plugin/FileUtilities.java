@@ -65,7 +65,7 @@ http://www.gnu.org/licenses/lgpl.html
 
  */
 
-package tor.client.plugin;
+package tor.plugin;
 
 import android.util.Log;
 

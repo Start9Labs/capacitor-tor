@@ -1,9 +1,9 @@
 import { Plugins } from '@capacitor/core'
-import { TorClientPlugin } from './definitions'
-const { TorClientPlugin : TorNative } = Plugins;
+import { TorPlugin } from './definitions'
+const { TorPlugin : TorNative } = Plugins;
 
 // Provides TS type safety for calling code.
-export class TorClient implements TorClientPlugin {
+export class Tor implements TorPlugin {
   constructor() {
   }
 
