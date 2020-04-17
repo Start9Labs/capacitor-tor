@@ -13,6 +13,7 @@ android/.idea
 android/*.iml
 android/.externalNativeBuild
 android/.settings
+android/local.properties
 
 *.log
 
@@ -23,6 +24,7 @@ ios/build
 *.xcuserdata
 *.xcuserdatad
 *.xcbkptlist
-ios/.DS_Store
+**/.DS_Store
+.DS_Store
 
 .vscode
