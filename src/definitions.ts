@@ -1,10 +1,10 @@
 // @ts-ignore
 declare module "@capacitor/core" {
   interface PluginRegistry {
-    TorClientPlugin: TorClientPlugin;
+    TorPlugin: TorPlugin;
   }
 }
 
-export interface TorClientPlugin {
+export interface TorPlugin {
   initTor(): Promise<void>;
 }

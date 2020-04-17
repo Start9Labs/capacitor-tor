@@ -1,4 +1,4 @@
-package tor.client.plugin;
+package tor.plugin;
 
 //import android.os.Build;
 //import android.support.annotation.RequiresApi;
@@ -27,7 +27,7 @@ import sockslib.client.SocksProxy;
 import sockslib.client.SocksSocket;
 
 @NativePlugin()
-public class TorClientPlugin extends Plugin {
+public class TorPlugin extends Plugin {
     private OnionProxyManager manager;
     private SocksProxy torSocksProxy;
     private static final int TOTAL_SECONDS_PER_TOR_STARTUP = 240;

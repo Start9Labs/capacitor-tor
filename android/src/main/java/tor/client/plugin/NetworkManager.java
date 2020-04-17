@@ -1,4 +1,4 @@
-package tor.client.plugin;
+package tor.plugin;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;

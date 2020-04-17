@@ -1,4 +1,4 @@
-package tor.client.plugin;
+package tor.plugin;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
