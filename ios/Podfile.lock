@@ -1,17 +1,11 @@
 PODS:
-  - BlueSocket (1.0.52)
   - Capacitor (2.0.1):
     - CapacitorCordova (= 2.0.1)
   - CapacitorCordova (2.0.1)
 
 DEPENDENCIES:
-  - BlueSocket
   - "Capacitor (from `../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../node_modules/@capacitor/ios`)"
-
-SPEC REPOS:
-  trunk:
-    - BlueSocket
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -20,10 +14,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@capacitor/ios"
 
 SPEC CHECKSUMS:
-  BlueSocket: 1acd943acb07b55905291d608649fcfbf8cbd57d
   Capacitor: 893baa42b33635ddf23d29d23d2a7f33f7c08bc7
   CapacitorCordova: 9fee2eb6780331b6ff09710d6a7d1f2e4707f1b9
 
-PODFILE CHECKSUM: d29c187d04182fa04c631d511136ce9a5df9f3c1
+PODFILE CHECKSUM: e66d6fa04b0daaf06d8498d39637adf77139c716
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.8.4
