@@ -16,7 +16,8 @@
   "license": "MIT",
   "dependencies": {
     "@capacitor/core": "latest",
-    "@types/node": "^13.9.5"
+    "@types/node": "^13.9.5",
+    "rxjs": "^6.5.5"
   },
   "devDependencies": {
     "@capacitor/android": "latest",
