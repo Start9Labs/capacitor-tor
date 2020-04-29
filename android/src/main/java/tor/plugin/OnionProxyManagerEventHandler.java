@@ -40,24 +40,9 @@ import java.util.List;
  * Logs the data we get from notifications from the Tor OP. This is really just meant for debugging.
  */
 public class OnionProxyManagerEventHandler implements EventHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(OnionProxyManagerEventHandler.class);
-    private String lastLog="";
-    public String getLastLog()
-    {
-        return lastLog;
-    }
-/*
-    public void circuitStatus(String status, String id, List<String> path, Map<String, String> info) {
-        String msg = "CircuitStatus: " + id + " " + status;
-        String purpose = info.get("PURPOSE");
-        if(purpose != null) msg += ", purpose: " + purpose;
-        String hsState = info.get("HS_STATE");
-        if(hsState != null) msg += ", state: " + hsState;
-        String rendQuery = info.get("REND_QUERY");
-        if(rendQuery != null) msg += ", service: " + rendQuery;
-        if(!path.isEmpty()) msg += ", path: " + shortenPath(path);
-        LOG.info(msg);
-    }*/
+    static final Logger LOG = LoggerFactory.getLogger(OnionProxyManagerEventHandler.class);
+    String lastLog="";
+
     public void circuitStatus(String status, String circID, String path) {
         String msg = "CircuitStatus: " + circID + " " + status;
         //String purpose = info.get("PURPOSE");

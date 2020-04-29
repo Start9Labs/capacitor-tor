@@ -29,9 +29,11 @@ See the Apache 2 License for the specific language governing permissions and lim
 
 package tor.plugin;
 
+import android.util.EventLog;
 import android.util.Log;
 
 import net.freehaven.tor.control.ConfigEntry;
+import net.freehaven.tor.control.EventHandler;
 import net.freehaven.tor.control.TorControlConnection;
 
 import org.slf4j.Logger;
@@ -74,6 +76,8 @@ public abstract class OnionProxyManager {
 
     protected final OnionProxyContext onionProxyContext;
 
+    private EventHandler eventHandler;
+
     private volatile Socket controlSocket = null;
     public volatile Socket socksSocket = null;
 
@@ -98,8 +102,13 @@ public abstract class OnionProxyManager {
      * @throws java.lang.InterruptedException - You know, if we are interrupted
      * @throws java.io.IOException - IO Exceptions
      */
-    public synchronized boolean startWithRepeat(int socksPort, int secondsBeforeTimeOut, int numberOfRetries) throws
-            InterruptedException, IOException {
+    public synchronized boolean startWithRepeat(
+            int socksPort,
+            int secondsBeforeTimeOut,
+            int numberOfRetries,
+            EventHandler eventHandler
+    ) throws InterruptedException, IOException {
+        this.eventHandler = eventHandler;
         if (secondsBeforeTimeOut <= 0 || numberOfRetries < 0) {
             throw new IllegalArgumentException("secondsBeforeTimeOut >= 0 & numberOfRetries > 0");
         }
@@ -309,14 +318,6 @@ public abstract class OnionProxyManager {
         return false;
     }
 
-    public String getLastLog() {
-        return "";
-//        if (controlConnection != null)
-//            return controlConnection.getLastLog();
-//        else
-//            return "";
-    }
-
     /**
      * Installs all necessary files and starts the Tor OP in offline mode (e.g. networkEnabled(false)). This would
      * only be used if you wanted to start the Tor OP so that the install and related is all done but aren't ready to
@@ -406,7 +407,7 @@ public abstract class OnionProxyManager {
 //            controlConnection.takeOwnership();
             controlConnection.resetConf(Collections.singletonList(OWNER));
             // Register to receive events from the Tor process
-            controlConnection.setEventHandler(new OnionProxyManagerEventHandler());
+            controlConnection.setEventHandler(eventHandler);
             controlConnection.setEvents(Arrays.asList(EVENTS));
 
             // We only set the class property once the connection is in a known good state

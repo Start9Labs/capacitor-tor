@@ -19,6 +19,7 @@ public class TorPlugin: CAPPlugin {
         let onionConnector = OnionConnecter.init()
         onionConnector.start(socksPort: socksPort, progress: { (i: Int) in
             print(i)
+            self.notifyListeners("torInitProgress", data: ["progress" : String(i)])
         }, completion: { result in
             switch result {
             case .success(let urlSessionConfiguration):

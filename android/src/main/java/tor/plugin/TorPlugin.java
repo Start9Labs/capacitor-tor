@@ -1,5 +1,6 @@
 package tor.plugin;
 
+import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -21,7 +22,22 @@ public class TorPlugin extends Plugin {
             socksPort = DEFAULT_SOCKS_PORT;
         }
 
-        manager.startWithRepeat(socksPort, TOTAL_SECONDS_PER_TOR_STARTUP, TOTAL_TRIES_PER_TOR_STARTUP);
+        manager.startWithRepeat(socksPort, TOTAL_SECONDS_PER_TOR_STARTUP, TOTAL_TRIES_PER_TOR_STARTUP,
+            new OnionProxyManagerEventHandler() {
+                @Override
+                public void message(String severity, String msg){
+                    super.message(severity, msg);
+                    if(msg.contains("Bootstrapped")){
+                        try {
+                            String percentStr = msg.split(" ")[1];
+                            String percent = percentStr.substring(0, percentStr.length() - 1);
+                            JSObject ret = new JSObject();
+                            ret.put("progress", percent);
+                            notifyListeners("torInitProgress", ret);
+                        } catch (Exception ignored) { }
+                    }
+                }
+        });
 
         call.success();
     }
