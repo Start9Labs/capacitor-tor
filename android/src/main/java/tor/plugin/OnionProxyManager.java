@@ -98,7 +98,7 @@ public abstract class OnionProxyManager {
      * @throws java.lang.InterruptedException - You know, if we are interrupted
      * @throws java.io.IOException - IO Exceptions
      */
-    public synchronized boolean startWithRepeat(int secondsBeforeTimeOut, int numberOfRetries) throws
+    public synchronized boolean startWithRepeat(int socksPort, int secondsBeforeTimeOut, int numberOfRetries) throws
             InterruptedException, IOException {
         if (secondsBeforeTimeOut <= 0 || numberOfRetries < 0) {
             throw new IllegalArgumentException("secondsBeforeTimeOut >= 0 & numberOfRetries > 0");
@@ -106,7 +106,7 @@ public abstract class OnionProxyManager {
 
         try {
             for(int retryCount = 0; retryCount < numberOfRetries; ++retryCount) {
-                if (!installAndStartTorOp()) {
+                if (!installAndStartTorOp(socksPort)) {
                     return false;
                 }
                 enableNetwork(true);
@@ -325,7 +325,7 @@ public abstract class OnionProxyManager {
      * @throws java.io.IOException - IO Exceptions
      * @throws java.lang.InterruptedException - If we are, well, interrupted
      */
-    public synchronized boolean installAndStartTorOp() throws IOException, InterruptedException {
+    public synchronized boolean installAndStartTorOp(int socksPort) throws IOException, InterruptedException {
         // The Tor OP will die if it looses the connection to its socket so if there is no controlSocket defined
         // then Tor is dead. This assumes, of course, that takeOwnership works and we can't end up with Zombies.
         if (controlConnection != null) {
@@ -360,7 +360,7 @@ public abstract class OnionProxyManager {
         String torPath = onionProxyContext.getTorExecutableFile().getAbsolutePath();
         String configPath = onionProxyContext.getTorrcFile().getAbsolutePath();
         String pid = onionProxyContext.getProcessId();
-        String[] cmd = { torPath, "-f", configPath, OWNER, pid };
+        String[] cmd = { torPath, "-f", configPath, "--socksport", String.valueOf(socksPort), OWNER, pid };
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
         onionProxyContext.setEnvironmentArgsAndWorkingDirectoryForStart(processBuilder);
         Process torProcess = null;
@@ -397,7 +397,7 @@ public abstract class OnionProxyManager {
             // Now we should be able to connect to the new process
             controlPortCountDownLatch.await();
             controlSocket = new Socket("127.0.0.1", control_port);
-            socksSocket = new Socket("127.0.0.1", 59590);
+            socksSocket = new Socket("127.0.0.1", socksPort);
 
             // Open a control connection and authenticate using the cookie file
             TorControlConnection controlConnection = new TorControlConnection(controlSocket);

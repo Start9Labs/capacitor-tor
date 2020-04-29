@@ -4,12 +4,9 @@ const { TorPlugin : TorNative } = Plugins;
 
 // Provides TS type safety for calling code.
 export class Tor implements TorPlugin {
-  constructor() {
-  }
+  constructor() {}
 
-  initTor(): Promise<void> {
-    return TorNative.initTor()
+  initTor(opt?: { socksPort: number }): Promise<void> {
+    return TorNative.initTor(opt)
   }
 }
-// npm run sbuild
-// ./rebuild

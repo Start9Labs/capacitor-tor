@@ -6,5 +6,5 @@ declare module "@capacitor/core" {
 }
 
 export interface TorPlugin {
-  initTor(): Promise<void>;
+  initTor(opt?: { socksPort: number }): Promise<void>;
 }
