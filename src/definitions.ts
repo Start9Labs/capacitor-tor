@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 // @ts-ignore
 declare module "@capacitor/core" {
   interface PluginRegistry {
@@ -6,5 +8,5 @@ declare module "@capacitor/core" {
 }
 
 export interface TorPlugin {
-  initTor(opt?: { socksPort: number }): Promise<void>;
+  initTor(opt?: { socksPort: number }): Observable<number>;
 }
