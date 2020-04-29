@@ -20,7 +20,10 @@ export class Tor implements TorPlugin {
   initTor(opt?: { socksPort: number }): Promise<void> {
     const eventListener = TorNative.addListener("torInitProgress", info => {
       this.initProgress.next(info.progress)
-      if(Number(info.progress) >= 100) { eventListener.remove() }
+      if(Number(info.progress) >= 100) { 
+        eventListener.remove() 
+        this.initProgress.complete()
+      }
     })
     return TorNative.initTor(opt)
   }
