@@ -16,10 +16,10 @@ public final class OnionConnecter {
 
     public init() {}
 
-    public func start(progress: ((Int) -> Void)?, completion: @escaping (Result<URLSessionConfiguration, OnionError>) -> Void) {
+    public func start(socksPort: Int, progress: ((Int) -> Void)?, completion: @escaping (Result<URLSessionConfiguration, OnionError>) -> Void) {
         self.progress = progress
         self.completion = completion
-        OnionManager.shared.startTor(delegate: self)
+        OnionManager.shared.startTor(socksPort: socksPort, delegate: self)
     }
 }
 
@@ -29,13 +29,13 @@ extension OnionConnecter: OnionManagerDelegate {
         self.progress?(progress)
     }
 
-    func torConnFinished(configuration: URLSessionConfiguration) {
+    func torConnFinished(socksPort: Int, configuration: URLSessionConfiguration) {
         // TODO: this is a fix for Tor 400.5.2. Can be removed once there is a
         // new release on github.
         configuration.connectionProxyDictionary = [
             kCFProxyTypeKey: kCFProxyTypeSOCKS,
             kCFStreamPropertySOCKSProxyHost: "localhost",
-            kCFStreamPropertySOCKSProxyPort: 59590
+            kCFStreamPropertySOCKSProxyPort: socksPort
         ]
         if #available(iOSApplicationExtension 13.0, *), #available(iOS 13.0, *) {
             configuration.tlsMaximumSupportedProtocolVersion = .TLSv12

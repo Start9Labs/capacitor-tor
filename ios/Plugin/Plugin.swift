@@ -15,8 +15,9 @@ public class TorPlugin: CAPPlugin {
     var fdTable: [Int32: Socket] = [:]
     
     @objc func initTor(_ call: CAPPluginCall) {
+        let socksPort = call.getInt("socksPort") ?? 9050
         let onionConnector = OnionConnecter.init()
-        onionConnector.start(progress: { (i: Int) in
+        onionConnector.start(socksPort: socksPort, progress: { (i: Int) in
             print(i)
         }, completion: { result in
             switch result {

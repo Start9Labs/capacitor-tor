@@ -10,7 +10,7 @@ import Tor
 
 protocol OnionManagerDelegate {
     func torConnProgress(_: Int)
-    func torConnFinished(configuration: URLSessionConfiguration)
+    func torConnFinished(socksPort: Int, configuration: URLSessionConfiguration)
     func torConnError()
 }
 
@@ -68,7 +68,6 @@ public class OnionManager: NSObject {
         var config_args = [
             "--allow-missing-torrc",
             "--ignore-missing-torrc",
-            "--socksport", "127.0.0.1:59590",
             "--controlport", "127.0.0.1:39060",
             "--log", log_loc,
             "--ClientOnionAuthDir", authDir.path
@@ -111,7 +110,7 @@ public class OnionManager: NSObject {
         })
     }
 
-    func startTor(delegate: OnionManagerDelegate?) {
+    func startTor(socksPort: Int, delegate: OnionManagerDelegate?) {
         cancelInitRetry()
         cancelFailGuard()
         state = .started
@@ -130,7 +129,7 @@ public class OnionManager: NSObject {
 
             let torConf = OnionManager.torBaseConf
 
-            let args = torConf.arguments!
+            let args = torConf.arguments! +  ["--socksport","127.0.0.1:" + String(socksPort)]
 
             #if DEBUG
             dump("\n\n\(String(describing: args))\n\n")
@@ -192,7 +191,7 @@ public class OnionManager: NSObject {
                             #endif
 
                             self.torController?.getSessionConfiguration({ configuration in
-                                delegate?.torConnFinished(configuration: configuration!)
+                                delegate?.torConnFinished(socksPort: socksPort, configuration: configuration!)
                             })
                         }
                     }) // torController.addObserver
