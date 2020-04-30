@@ -441,7 +441,6 @@ public abstract class OnionProxyManager {
 
     public boolean newIdentity(){
         try {
-
             controlConnection.signal("NEWNYM");
             return true;
         } catch (IOException e) {

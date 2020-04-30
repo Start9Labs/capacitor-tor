@@ -21,4 +21,12 @@ export class Tor implements TorPlugin {
     TorNative.initTor(opt)
     return initProgress
   }
+
+  stop(): Promise<void> {
+    return TorNative.stop()
+  }
+
+  newnym(): Promise<void> {
+    return TorNative.newnym()
+  }
 }

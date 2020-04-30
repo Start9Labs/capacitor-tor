@@ -9,4 +9,6 @@ declare module "@capacitor/core" {
 
 export interface TorPlugin {
   initTor(opt?: { socksPort: number }): Observable<number>;
+  stop()  : Promise<void> 
+  newnym(): Promise<void> 
 }
