@@ -11,7 +11,7 @@ export class Tor implements TorPlugin {
     const initProgress = new Subject<number>()
     
     const eventListener = TorNative.addListener("torInitProgress", info => {
-      initProgress.next(info.progress)
+      initProgress.next(Number(info.progress))
       if(Number(info.progress) >= 100) { 
         eventListener.remove() 
         initProgress.complete()
