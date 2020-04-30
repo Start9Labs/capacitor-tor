@@ -13,6 +13,7 @@ public class TorPlugin extends Plugin {
     private static final int TOTAL_SECONDS_PER_TOR_STARTUP = 240;
     private static final int TOTAL_TRIES_PER_TOR_STARTUP = 5;
     private static final int DEFAULT_SOCKS_PORT = 9050;
+
     private OnionProxyManager manager;
 
     @PluginMethod()
@@ -22,22 +23,12 @@ public class TorPlugin extends Plugin {
             socksPort = DEFAULT_SOCKS_PORT;
         }
 
-        getManager().startWithRepeat(socksPort, TOTAL_SECONDS_PER_TOR_STARTUP, TOTAL_TRIES_PER_TOR_STARTUP,
-            new OnionProxyManagerEventHandler() {
-                @Override
-                public void message(String severity, String msg){
-                    super.message(severity, msg);
-                    if(msg.contains("Bootstrapped")){
-                        try {
-                            String percentStr = msg.split(" ")[1];
-                            String percent = percentStr.substring(0, percentStr.length() - 1);
-                            JSObject ret = new JSObject();
-                            ret.put("progress", percent);
-                            notifyListeners("torInitProgress", ret);
-                        } catch (Exception ignored) { }
-                    }
-                }
-        });
+        getManager().startWithRepeat(
+            socksPort, 
+            TOTAL_SECONDS_PER_TOR_STARTUP, 
+            TOTAL_TRIES_PER_TOR_STARTUP,
+            STARTUP_EVENT_HANDLER
+        );
 
         call.success();
     }
@@ -77,32 +68,21 @@ public class TorPlugin extends Plugin {
         return manager;
     }
 
-//    @PluginMethod()
-//    public void stop(PluginCall call) throws IOException, InterruptedException {
-//        OnionProxyManager manager = new AndroidOnionProxyManager(getContext(), "torfiles");
-//        Integer socksPort = call.getInt("socksPort");
-//        if(socksPort == null){
-//            socksPort = DEFAULT_SOCKS_PORT;
-//        }
-//
-//        manager.startWithRepeat(socksPort, TOTAL_SECONDS_PER_TOR_STARTUP, TOTAL_TRIES_PER_TOR_STARTUP,
-//            new OnionProxyManagerEventHandler() {
-//                @Override
-//                public void message(String severity, String msg){
-//                    super.message(severity, msg);
-//                    if(msg.contains("Bootstrapped")){
-//                        try {
-//                            String percentStr = msg.split(" ")[1];
-//                            String percent = percentStr.substring(0, percentStr.length() - 1);
-//                            JSObject ret = new JSObject();
-//                            ret.put("progress", percent);
-//                            notifyListeners("torInitProgress", ret);
-//                        } catch (Exception ignored) { }
-//                    }
-//                }
-//        });
-//
-//        call.success();
-//    }
+    private OnionProxyManagerEventHandler STARTUP_EVENT_HANDLER = new OnionProxyManagerEventHandler() {
+        @Override
+        public void message(String severity, String msg){
+            super.message(severity, msg);
+            if(msg.contains("Bootstrapped")){
+                try {
+                    String percentStr = msg.split(" ")[1];
+                    String percent = percentStr.substring(0, percentStr.length() - 1);
+                    JSObject ret = new JSObject();
+                    ret.put("progress", percent);
+                    notifyListeners("torInitProgress", ret);
+                } catch (Exception ignored) { }
+            }
+        }
+    };
+
 }
 
