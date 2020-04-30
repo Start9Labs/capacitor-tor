@@ -13,7 +13,7 @@ public class TorPlugin extends Plugin {
     private static final int TOTAL_SECONDS_PER_TOR_STARTUP = 240;
     private static final int TOTAL_TRIES_PER_TOR_STARTUP = 5;
     private static final int DEFAULT_SOCKS_PORT = 9050;
-    private final OnionProxyManager manager = new AndroidOnionProxyManager(getContext(), "torfiles");
+    private OnionProxyManager manager;
 
     @PluginMethod()
     public void initTor(PluginCall call) throws IOException, InterruptedException {
@@ -22,7 +22,7 @@ public class TorPlugin extends Plugin {
             socksPort = DEFAULT_SOCKS_PORT;
         }
 
-        manager.startWithRepeat(socksPort, TOTAL_SECONDS_PER_TOR_STARTUP, TOTAL_TRIES_PER_TOR_STARTUP,
+        getManager().startWithRepeat(socksPort, TOTAL_SECONDS_PER_TOR_STARTUP, TOTAL_TRIES_PER_TOR_STARTUP,
             new OnionProxyManagerEventHandler() {
                 @Override
                 public void message(String severity, String msg){
@@ -44,8 +44,15 @@ public class TorPlugin extends Plugin {
 
     @PluginMethod()
     public void stop(PluginCall call) throws IOException {
-        manager.stop();
+        getManager().stop();
         call.success();
+    }
+
+    private OnionProxyManager getManager() {
+        if(manager == null){
+            manager = new AndroidOnionProxyManager(getContext(), "torfiles");
+        }
+        return manager;
     }
 
 //    @PluginMethod()
