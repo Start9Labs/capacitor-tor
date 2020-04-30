@@ -7,7 +7,7 @@ const { TorPlugin : TorNative } = Plugins;
 export class Tor implements TorPlugin {
   constructor() {}
 
-  initTor(opt?: { socksPort: number }): Observable<number> {
+  start(opt?: { socksPort: number }): Observable<number> {
     const initProgress = new Subject<number>()
     
     const eventListener = TorNative.addListener("torInitProgress", info => {
@@ -18,7 +18,7 @@ export class Tor implements TorPlugin {
       }
     })
 
-    TorNative.initTor(opt)
+    TorNative.start(opt)
     return initProgress
   }
 
@@ -28,5 +28,9 @@ export class Tor implements TorPlugin {
 
   newnym(): Promise<void> {
     return TorNative.newnym()
+  }
+  
+  running(): Promise<{running: boolean}> {
+    return TorNative.running()
   }
 }

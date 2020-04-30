@@ -16,7 +16,7 @@ public class TorPlugin extends Plugin {
     private OnionProxyManager manager;
 
     @PluginMethod()
-    public void initTor(PluginCall call) throws IOException, InterruptedException {
+    public void start(PluginCall call) throws IOException, InterruptedException {
         Integer socksPort = call.getInt("socksPort");
         if(socksPort == null){
             socksPort = DEFAULT_SOCKS_PORT;
@@ -42,10 +42,32 @@ public class TorPlugin extends Plugin {
         call.success();
     }
 
+    // Kills running tor daemon
     @PluginMethod()
     public void stop(PluginCall call) throws IOException {
-        getManager().stop();
+        OnionProxyManager manager = getManager();
+        if(manager.isRunning()){
+            manager.stop();
+        }
         call.success();
+    }
+
+    // Reset tor chain
+    @PluginMethod()
+    public void newnym(PluginCall call) throws IOException {
+        OnionProxyManager manager = getManager();
+        if(manager.isRunning()){
+            manager.newnym();
+        }
+        call.success();
+    }
+
+    @PluginMethod()
+    public void running(PluginCall call) throws IOException {
+        boolean running = getManager().isRunning();
+        JSObject object = new JSObject();
+        object.put("running", running);
+        call.success(object);
     }
 
     private OnionProxyManager getManager() {

@@ -439,7 +439,7 @@ public abstract class OnionProxyManager {
         return onionProxyContext.getWorkingDirectory();
     }
 
-    public boolean newIdentity(){
+    public boolean newnym(){
         try {
             controlConnection.signal("NEWNYM");
             return true;
