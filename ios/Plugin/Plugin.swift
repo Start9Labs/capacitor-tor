@@ -9,15 +9,15 @@ import Tor
  */
 @objc(TorPlugin)
 public class TorPlugin: CAPPlugin {
-    var onionConnector: OnionManager? = nil
     var urlSessionConfiguration: URLSessionConfiguration? = nil
     var restClient: Rest? = nil
     var fdTable: [Int32: Socket] = [:]
+    let onionConnector = OnionConnecter.init()
+    let onionManager = OnionManager.shared
     
-    @objc func initTor(_ call: CAPPluginCall) {
+    @objc func start(_ call: CAPPluginCall) {
         let socksPort = call.getInt("socksPort") ?? 9050
-        let onionConnector = OnionConnecter.init()
-        onionConnector.start(socksPort: socksPort, progress: { (i: Int) in
+        onionConnector.start(manager: onionManager, socksPort: socksPort, progress: { (i: Int) in
             print(i)
             self.notifyListeners("torInitProgress", data: ["progress" : String(i)])
         }, completion: { result in
@@ -29,7 +29,26 @@ public class TorPlugin: CAPPlugin {
                 call.error(error.localizedDescription)
             }
         })
+        
     }
+    
+    //    stop()   : Promise<void>
+    @objc func stop(_ call: CAPPluginCall) {
+        onionManager.stopTor()
+        call.resolve()
+    }
+
+    //    newnym() : Promise<void>
+    @objc func newnym(_ call: CAPPluginCall) {
+        onionManager.torReconnect()
+        call.resolve()
+    }
+
+    //    running(): Promise<{running: boolean}>
+    @objc func running(_ call: CAPPluginCall) {
+        call.resolve(["running" : onionManager.running()])
+    }
+
 }
 
 extension Data {

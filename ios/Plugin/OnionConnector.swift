@@ -16,10 +16,10 @@ public final class OnionConnecter {
 
     public init() {}
 
-    public func start(socksPort: Int, progress: ((Int) -> Void)?, completion: @escaping (Result<URLSessionConfiguration, OnionError>) -> Void) {
+    public func start(manager: OnionManager, socksPort: Int, progress: ((Int) -> Void)?, completion: @escaping (Result<URLSessionConfiguration, OnionError>) -> Void) {
         self.progress = progress
         self.completion = completion
-        OnionManager.shared.startTor(socksPort: socksPort, delegate: self)
+        manager.startTor(socksPort: socksPort, delegate: self)
     }
 }
 

@@ -91,7 +91,7 @@ public class OnionManager: NSObject {
 
     @objc func networkChange() {
         var confs: [Dictionary<String, String>] = []
-
+        
         confs.append(["key": "ClientPreferIPv6DirPort", "value": "auto"])
         confs.append(["key": "ClientPreferIPv6ORPort", "value": "auto"])
         confs.append(["key": "clientuseipv4", "value": "1"])
@@ -255,12 +255,22 @@ public class OnionManager: NSObject {
         // we actually rely on that to stop tor and reset the state of torController. (we can
         // SIGNAL SHUTDOWN here, but we can't reset the torController "isConnected" state.)
         self.torController?.disconnect()
-
+//        self.torController?.sendCommand("SIGNAL SHUTDOWN", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
+//            true
+//        })
         self.torController = nil
-
         // More cleanup
         self.torThread?.cancel()
+        self.torThread = nil
         self.state = .stopped
+    }
+    
+    @objc func running() -> Bool {
+        if let ret = self.torThread {
+          return ret.isExecuting
+        } else {
+          return false
+        }
     }
 
     /**
