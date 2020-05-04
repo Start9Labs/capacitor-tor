@@ -462,7 +462,7 @@ public abstract class OnionProxyManager {
             return this.reconnect();
         } catch (IOException e) {
             e.printStackTrace();
-            return false
+            return false;
         }
     }
 

@@ -43,7 +43,7 @@ public class TorPlugin extends Plugin {
         call.success();
     }
 
-    @PluginMethod
+    @PluginMethod()
     public void networkChange(PluginCall call) throws IOException {
         OnionProxyManager manager = getManager();
         if(manager.isRunning()) {
