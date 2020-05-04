@@ -1,6 +1,5 @@
 import Foundation
 import Capacitor
-import Socket
 import Tor
 
 /**
@@ -11,7 +10,6 @@ import Tor
 public class TorPlugin: CAPPlugin {
     var urlSessionConfiguration: URLSessionConfiguration? = nil
     var restClient: Rest? = nil
-    var fdTable: [Int32: Socket] = [:]
     let onionConnector = OnionConnecter.init()
     let onionManager = OnionManager.shared
     
@@ -38,7 +36,7 @@ public class TorPlugin: CAPPlugin {
     }
 
     @objc func reconnect(_ call: CAPPluginCall) {
-        onionManager.reconnect()
+        onionManager.torReconnect()
         call.resolve()
     }
 
