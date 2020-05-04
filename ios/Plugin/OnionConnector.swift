@@ -25,7 +25,6 @@ public final class OnionConnecter {
 
 extension OnionConnecter: OnionManagerDelegate {
     func torConnProgress(_ progress: Int) {
-        print("\(progress)")
         self.progress?(progress)
     }
 

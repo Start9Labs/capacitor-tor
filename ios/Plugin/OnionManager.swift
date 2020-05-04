@@ -102,7 +102,7 @@ public class OnionManager: NSObject {
     }
 
     func torReconnect() {
-        torController?.sendCommand("RELOAD", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
+        torController?.sendCommand("SIGNAL RELOAD", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
             true
         })
         torController?.sendCommand("SIGNAL NEWNYM", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
@@ -254,10 +254,12 @@ public class OnionManager: NSObject {
         // under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
         // we actually rely on that to stop tor and reset the state of torController. (we can
         // SIGNAL SHUTDOWN here, but we can't reset the torController "isConnected" state.)
+        var confs: [Dictionary<String, String>] = []
+        confs.append(["key": "DisableNetwork", "value": "1"])
+        self.torController?.setConfs(confs, completion: { _, _ in })
+        
         self.torController?.disconnect()
-//        self.torController?.sendCommand("SIGNAL SHUTDOWN", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
-//            true
-//        })
+        
         self.torController = nil
         // More cleanup
         self.torThread?.cancel()

@@ -48,7 +48,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
@@ -449,6 +451,32 @@ public abstract class OnionProxyManager {
 
         }
     }
+
+    public boolean networkChange() {
+        try {
+            Map<String,String> confs = new HashMap();
+            confs.put("ClientPreferIPv6DirPort", "auto");
+            confs.put("ClientPreferIPv6ORPort", "auto");
+            confs.put("clientuseipv4", "1");
+            controlConnection.setConf(confs);
+            return this.reconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false
+        }
+    }
+
+    public boolean reconnect(){
+        try {
+            controlConnection.signal("RELOAD");
+            controlConnection.signal("NEWNYM");
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     protected void eatStream(final InputStream inputStream, final boolean stdError, final CountDownLatch countDownLatch) {
         new Thread() {
             @Override

@@ -26,6 +26,14 @@ export class Tor implements TorPlugin {
     return TorNative.stop()
   }
 
+  reconnect(): Promise<void> {
+    return TorNative.reconnect()
+  }
+
+  networkChange(): Promise<void> {
+    return TorNative.networkChange()
+  }
+
   newnym(): Promise<void> {
     return TorNative.newnym()
   }

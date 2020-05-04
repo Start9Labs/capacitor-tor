@@ -18,7 +18,6 @@ public class TorPlugin: CAPPlugin {
     @objc func start(_ call: CAPPluginCall) {
         let socksPort = call.getInt("socksPort") ?? 9050
         onionConnector.start(manager: onionManager, socksPort: socksPort, progress: { (i: Int) in
-            print(i)
             self.notifyListeners("torInitProgress", data: ["progress" : String(i)])
         }, completion: { result in
             switch result {
@@ -35,6 +34,16 @@ public class TorPlugin: CAPPlugin {
     //    stop()   : Promise<void>
     @objc func stop(_ call: CAPPluginCall) {
         onionManager.stopTor()
+        call.resolve()
+    }
+
+    @objc func reconnect(_ call: CAPPluginCall) {
+        onionManager.reconnect()
+        call.resolve()
+    }
+
+    @objc func networkChange(_ call: CAPPluginCall) {
+        onionManager.networkChange()
         call.resolve()
     }
 

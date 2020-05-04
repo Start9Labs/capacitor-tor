@@ -6,6 +6,8 @@
 CAP_PLUGIN(TorPlugin, "TorPlugin",
     CAP_PLUGIN_METHOD(start, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(stop, CAPPluginReturnPromise);
+    CAP_PLUGIN_METHOD(reconnect, CAPPluginReturnPromise);
+    CAP_PLUGIN_METHOD(networkChange, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(running, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(newnym, CAPPluginReturnPromise);
 )

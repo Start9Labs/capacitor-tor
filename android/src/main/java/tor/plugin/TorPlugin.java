@@ -43,12 +43,53 @@ public class TorPlugin extends Plugin {
         call.success();
     }
 
+    @PluginMethod
+    public void networkChange(PluginCall call) throws IOException {
+        OnionProxyManager manager = getManager();
+        if(manager.isRunning()) {
+            System.out.println("Tor: reloading network configuration...");
+            if (manager.networkChange()) {
+                System.out.println("Tor: network configuration reloaded");
+                call.success();
+                return;
+            } else {
+                call.reject("Tor: Could not reload network configuration");
+                return;
+            }
+        }
+        call.success();
+    }
+
+    @PluginMethod()
+    public void reconnect(PluginCall call) throws IOException {
+        OnionProxyManager manager = getManager();
+        if(manager.isRunning()) {
+            System.out.println("Tor: reconnecting...");
+            if (manager.reconnect()) {
+                System.out.println("Tor: reconnected");
+                call.success();
+                return;
+            } else {
+                call.reject("Tor: Could not reconnect tor daemon");
+                return;
+            }
+        }
+        call.success();
+    }
+
     // Reset tor chain
     @PluginMethod()
     public void newnym(PluginCall call) throws IOException {
         OnionProxyManager manager = getManager();
         if(manager.isRunning()){
-            manager.newnym();
+            if (manager.newnym()) {
+                System.out.println("Tor: successfully rebuilt tor circuit");
+                call.success();
+                return;
+            } else {
+                call.reject("Tor: Could not rebuild tor circtuit");
+                return;
+            }
         }
         call.success();
     }
