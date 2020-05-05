@@ -89,7 +89,7 @@ public class OnionManager: NSObject {
     private var customBridges: [String]?
     private var needsReconfiguration: Bool = false
 
-    @objc func networkChange() {
+    @objc func networkChange(completion: @escaping (Bool) -> Void) {
         var confs: [Dictionary<String, String>] = []
         
         confs.append(["key": "ClientPreferIPv6DirPort", "value": "auto"])
@@ -98,15 +98,29 @@ public class OnionManager: NSObject {
 
         torController?.setConfs(confs, completion: { _, _ in
         })
-        torReconnect()
+        torReconnect(completion: completion)
     }
 
-    func torReconnect() {
+    func torReconnect(completion: @escaping (Bool) -> Void) {
         torController?.sendCommand("SIGNAL RELOAD", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
             true
         })
+        torNewnym(completion: completion)
+    }
+    
+    func torNewnym(completion: @escaping (Bool) -> Void) {
         torController?.sendCommand("SIGNAL NEWNYM", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
             true
+        })
+        var completeObs: Any?
+        completeObs = self.torController?.addObserver(forCircuitEstablished: { established in
+            if established {
+                self.state = .connected
+                self.torController?.removeObserver(completeObs)
+                self.cancelInitRetry()
+                self.cancelFailGuard()
+            }
+            completion(established)
         })
     }
 

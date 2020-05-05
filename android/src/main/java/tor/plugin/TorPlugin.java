@@ -122,6 +122,16 @@ public class TorPlugin extends Plugin {
                     notifyListeners("torInitProgress", ret);
                 } catch (Exception ignored) { }
             }
+            if(msg.contains("CIRCUIT_ESTABLISHED")){
+                JSObject ret = new JSObject();
+                ret.put("success", true);
+                notifyListeners("torReconnectSuccess", ret);
+            }
+            if (msg.contains("CIRCUIT_NOT_ESTABLISHED")){
+                JSObject ret = new JSObject();
+                ret.put("success", false);
+                notifyListeners("torReconnectSuccess", ret);
+            }
         }
     };
 

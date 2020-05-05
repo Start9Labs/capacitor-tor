@@ -469,8 +469,7 @@ public abstract class OnionProxyManager {
     public boolean reconnect(){
         try {
             controlConnection.signal("RELOAD");
-            controlConnection.signal("NEWNYM");
-            return true;
+            return this.newnym();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
