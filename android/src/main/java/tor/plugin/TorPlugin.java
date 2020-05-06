@@ -54,8 +54,8 @@ public class TorPlugin extends Plugin {
                 System.out.println("Tor: reconnected");
                 call.success();
                 JSObject ret = new JSObject();
-                ret.put("success", true)
-                notifyListeners("torReconnectSucceeded", ret)
+                ret.put("success", true);
+                notifyListeners("torReconnectSucceeded", ret);
                 return;
             } else {
                 call.reject("Tor: Could not reconnect tor daemon");
@@ -74,8 +74,8 @@ public class TorPlugin extends Plugin {
                 System.out.println("Tor: successfully rebuilt tor circuit");
                 call.success();
                 JSObject ret = new JSObject();
-                ret.put("success", true)
-                notifyListeners("torReconnectSucceeded", ret)
+                ret.put("success", true);
+                notifyListeners("torReconnectSucceeded", ret);
                 return;
             } else {
                 call.reject("Tor: Could not rebuild tor circuit");
