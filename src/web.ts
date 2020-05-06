@@ -41,23 +41,8 @@ export class Tor implements TorPlugin {
     return completionPromise
   }
 
-  networkChange(): Promise<void> {
-    const completeionPromise = new Promise<void>((res, rej) => {
-      const reconnectListener = TorNative.addListener("torReconnectSucceeded", ({ success }) => {
-        reconnectListener.remove()
-        if (success) {
-          res()
-        } else {
-          rej("Tor Network Change Handler Failed!")
-        }
-      })
-    })
-    TorNative.networkChange()
-    return completeionPromise
-  }
-
   newnym(): Promise<void> {
-    const completeionPromise = new Promise<void>((res, rej) => {
+    const completionPromise = new Promise<void>((res, rej) => {
       const reconnectListener = TorNative.addListener("torReconnectSucceeded", ({ success }) => {
         reconnectListener.remove()
         if (success) {
@@ -68,7 +53,7 @@ export class Tor implements TorPlugin {
       })
     })
     TorNative.newnym()
-    return completeionPromise
+    return completionPromise
   }
   
   running(): Promise<{running: boolean}> {

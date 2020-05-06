@@ -6,6 +6,8 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 @NativePlugin()
@@ -44,23 +46,6 @@ public class TorPlugin extends Plugin {
     }
 
     @PluginMethod()
-    public void networkChange(PluginCall call) throws IOException {
-        OnionProxyManager manager = getManager();
-        if(manager.isRunning()) {
-            System.out.println("Tor: reloading network configuration...");
-            if (manager.networkChange()) {
-                System.out.println("Tor: network configuration reloaded");
-                call.success();
-                return;
-            } else {
-                call.reject("Tor: Could not reload network configuration");
-                return;
-            }
-        }
-        call.success();
-    }
-
-    @PluginMethod()
     public void reconnect(PluginCall call) throws IOException {
         OnionProxyManager manager = getManager();
         if(manager.isRunning()) {
@@ -68,6 +53,9 @@ public class TorPlugin extends Plugin {
             if (manager.reconnect()) {
                 System.out.println("Tor: reconnected");
                 call.success();
+                JSObject ret = new JSObject();
+                ret.put("success", true)
+                notifyListeners("torReconnectSucceeded", ret)
                 return;
             } else {
                 call.reject("Tor: Could not reconnect tor daemon");
@@ -85,9 +73,12 @@ public class TorPlugin extends Plugin {
             if (manager.newnym()) {
                 System.out.println("Tor: successfully rebuilt tor circuit");
                 call.success();
+                JSObject ret = new JSObject();
+                ret.put("success", true)
+                notifyListeners("torReconnectSucceeded", ret)
                 return;
             } else {
-                call.reject("Tor: Could not rebuild tor circtuit");
+                call.reject("Tor: Could not rebuild tor circuit");
                 return;
             }
         }
@@ -121,16 +112,6 @@ public class TorPlugin extends Plugin {
                     ret.put("progress", percent);
                     notifyListeners("torInitProgress", ret);
                 } catch (Exception ignored) { }
-            }
-            if(msg.contains("CIRCUIT_ESTABLISHED")){
-                JSObject ret = new JSObject();
-                ret.put("success", true);
-                notifyListeners("torReconnectSuccess", ret);
-            }
-            if (msg.contains("CIRCUIT_NOT_ESTABLISHED")){
-                JSObject ret = new JSObject();
-                ret.put("success", false);
-                notifyListeners("torReconnectSuccess", ret);
             }
         }
     };

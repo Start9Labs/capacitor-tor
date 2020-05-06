@@ -36,18 +36,13 @@ public class TorPlugin: CAPPlugin {
     }
 
     @objc func reconnect(_ call: CAPPluginCall) {
-        onionManager.torReconnect(completion: { established in self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
-        call.resolve()
-    }
-
-    @objc func networkChange(_ call: CAPPluginCall) {
-        onionManager.networkChange(completion: { established in self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
+        onionManager.torReconnect(completion: { established in print("what what what"); self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
         call.resolve()
     }
 
     //    newnym() : Promise<void>
     @objc func newnym(_ call: CAPPluginCall) {
-        onionManager.torNewnym(completion: { established in self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
+        onionManager.torNewnym(completion: { established in print("what fuck me"); self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
         call.resolve()
     }
 
