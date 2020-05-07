@@ -9,17 +9,21 @@ export class Tor implements TorPlugin {
 
   start(opt?: { socksPort: number, initTimeout?: number }): Observable<number> {
     const initProgress$ = new Subject<number>()
-    const initTimeout = (opt || {}).initTimeout || 15000
+    const initTimeout = opt && opt.initTimeout
 
-    interval(100).subscribe(i => {
-      if(i > initTimeout) {
+    // check every 100ms if we've timedout
+    const timeoutSub = interval(100).subscribe(i => {
+      if(initTimeout && (i * 100) > initTimeout) {
+        timeoutSub.unsubscribe()
         initProgress$.error(`Tor failed to boostrap within ${initTimeout} ms.`)
+        this.stop()
       }
     })
 
     const eventListener = TorNative.addListener("torInitProgress", info => {
       initProgress$.next(Number(info.progress))
       if(Number(info.progress) >= 100) { 
+        timeoutSub.unsubscribe()
         eventListener.remove() 
         initProgress$.complete()
       }
