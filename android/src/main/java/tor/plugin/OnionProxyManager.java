@@ -123,87 +123,12 @@ public abstract class OnionProxyManager {
             return started;
         } finally {
             // Make sure we return the Tor OP in some kind of consistent state, even if it's 'off'.
-            if (!isRunning()) {
+            if (!isNetworkEnabled()) {
                 stop();
             }
         }
     }
 
-    /**
-     * Returns the socks port on the IPv4 localhost address that the Tor OP is listening on
-     * @return Discovered socks port
-     * @throws java.io.IOException - File errors
-     */
-    public synchronized int getIPv4LocalHostSocksPort() throws IOException {
-        if (!isRunning()) {
-            throw new RuntimeException("Tor is not running!");
-        }
-
-        // This returns a set of space delimited quoted strings which could be Ipv4, Ipv6 or unix sockets
-        String[] socksIpPorts = controlConnection.getInfo("net/listeners/socks").split(" ");
-
-        for(String address : socksIpPorts) {
-            if (address.contains("\"127.0.0.1:")) {
-                // Remember, the last character will be a " so we have to remove that
-                return Integer.parseInt(address.substring(address.lastIndexOf(":") + 1, address.length() - 1));
-            }
-        }
-
-        throw new RuntimeException("We don't have an Ipv4 localhost binding for socks!");
-    }
-
-    /**
-     * Publishes a hidden service
-     * @param hiddenServicePort The port that the hidden service will accept connections on
-     * @param localPort The local port that the hidden service will relay connections to
-     * @return The hidden service's onion address in the form X.onion.
-     * @throws java.io.IOException - File errors
-     */
-    public synchronized String publishHiddenService(int hiddenServicePort, int localPort) throws IOException {
-        if(controlConnection == null) {
-            throw new RuntimeException("Service is not running.");
-        }
-
-        List<ConfigEntry> currentHiddenServices = controlConnection.getConf("HiddenServiceOptions");
-
-        if (!(currentHiddenServices.size() == 1 &&
-                currentHiddenServices.get(0).key.compareTo("HiddenServiceOptions") == 0 &&
-                currentHiddenServices.get(0).value.compareTo("") == 0)) {
-            throw new RuntimeException("Sorry, only one hidden service to a customer and we already have one. Please send complaints to https://github.com/thaliproject/Tor_Onion_Proxy_Library/issues/5 with your scenario so we can justify fixing this.");
-        }
-
-        LOG.info("Creating hidden service");
-        File hostnameFile = onionProxyContext.getHostNameFile();
-
-        if (!hostnameFile.getParentFile().exists() &&
-                !hostnameFile.getParentFile().mkdirs()) {
-            throw new RuntimeException("Could not create hostnameFile parent directory");
-        }
-
-        if (!hostnameFile.exists() && !hostnameFile.createNewFile()) {
-            throw new RuntimeException("Could not create hostnameFile");
-        }
-
-        // Watch for the hostname file being created/updated
-        WriteObserver hostNameFileObserver = onionProxyContext.generateWriteObserver(hostnameFile);
-        // Use the control connection to update the Tor config
-        List<String> config = Arrays.asList(
-                "HiddenServiceDir " + hostnameFile.getParentFile().getAbsolutePath(),
-                "HiddenServicePort " + hiddenServicePort + " 127.0.0.1:" + localPort);
-        controlConnection.setConf(config);
-        controlConnection.saveConf();
-        // Wait for the hostname file to be created/updated
-        if(!hostNameFileObserver.poll(HOSTNAME_TIMEOUT, MILLISECONDS)) {
-            FileUtilities.listFilesToLog(hostnameFile.getParentFile());
-            throw new RuntimeException("Wait for hidden service hostname file to be created expired.");
-        }
-
-        // Publish the hidden service's onion hostname in transport properties
-        String hostname = new String(FileUtilities.read(hostnameFile), "UTF-8").trim();
-        LOG.info("Hidden service config has completed.");
-
-        return hostname;
-    }
 
     /**
      * Kills the Tor OP Process. Once you have called this method nothing is going to work until you either call
@@ -233,7 +158,7 @@ public abstract class OnionProxyManager {
      * @throws java.io.IOException - IO exceptions
      */
     public synchronized boolean isRunning() throws IOException {
-        return isNetworkEnabled();
+        return isNetworkEnabled() && isBootstrapped();
     }
 
     /**
