@@ -57,9 +57,19 @@ export class Tab1Page {
 
   async ngOnInit() {
     console.log('Initializing Tor Daemon.');
-    await this.tor.initTor();
+    /* Start tor socks listener on socksPort (9250).
+       If tor takes longer than initTimeout (15000) to start and bootstrap fully,
+       the returned observable will error out. If initTimeout is omitted, tor
+       will attempt to connect forever and the observable will never error out.
+    /* 
+    this.tor.start({socksPort: 9250, initTimeout: 15000}).subscribe({
+       next: progressPercentage => this.handleConnecting(progressPercentage),
+       error: whatHappened => { throw new Error('Tor subscription blew up: ' + whatHappened) }
+    })
     console.log(`Tor Daemon initialized.`);
   }
+
+  ...
 }
 ```
 
