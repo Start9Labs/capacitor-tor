@@ -36,14 +36,18 @@ public class TorPlugin: CAPPlugin {
     }
 
     @objc func reconnect(_ call: CAPPluginCall) {
-        onionManager.torReconnect(completion: { established in print("what what what"); self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
-        call.resolve()
+        onionManager.torReconnect(completion: { established in
+                self.handleEstablished(call, established, "tor reconnect")
+            }
+        )
     }
 
     //    newnym() : Promise<void>
     @objc func newnym(_ call: CAPPluginCall) {
-        onionManager.torNewnym(completion: { established in print("what fuck me"); self.notifyListeners("torReconnectSucceeded", data: ["success": established]) })
-        call.resolve()
+        onionManager.torNewnym(completion: { established in
+                self.handleEstablished(call, established, "tor newnym")
+            }
+        )
     }
 
     //    running(): Promise<{running: boolean}>
@@ -51,6 +55,15 @@ public class TorPlugin: CAPPlugin {
         call.resolve(["running" : onionManager.running()])
     }
 
+    func handleEstablished(_ call: CAPPluginCall, _ established: Bool, _ taskDesc: String) {
+        if(established){
+            CAPLog.print(taskDesc, "Completed")
+            call.resolve()
+        } else {
+            CAPLog.print(taskDesc, "Failed")
+            call.reject(taskDesc + " failed")
+        }
+    }
 }
 
 extension Data {

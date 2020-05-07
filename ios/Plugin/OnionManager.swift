@@ -103,7 +103,7 @@ public class OnionManager: NSObject {
     func torReconnect(completion: @escaping (Bool) -> Void) {
         torController?.resetConnection(completion)
     }
-    
+
     func torNewnym(completion: @escaping (Bool) -> Void) {
         torController?.sendCommand("SIGNAL NEWNYM", arguments: nil, data: nil, observer: { codes, _, stop -> Bool in
             completion(codes.first?.intValue == 250)
