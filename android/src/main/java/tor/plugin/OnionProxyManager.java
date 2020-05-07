@@ -116,33 +116,11 @@ public abstract class OnionProxyManager {
         }
 
         try {
-            for(int retryCount = 0; retryCount < numberOfRetries; ++retryCount) {
-                if (!installAndStartTorOp(socksPort)) {
-                    return false;
-                }
+            boolean started = installAndStartTorOp(socksPort);
+            if(started) {
                 enableNetwork(true);
-
-                // We will check every second to see if boot strapping has finally finished
-                for(int secondsWaited = 0; secondsWaited < secondsBeforeTimeOut; ++secondsWaited) {
-                    if (!isBootstrapped()) {
-                        Thread.sleep(1000,0);
-                    } else {
-                        return true;
-                    }
-                }
-
-                // Bootstrapping isn't over so we need to restart and try again
-                stop();
-                // Experimentally we have found that if a Tor OP has run before and thus has cached descriptors
-                // and that when we try to start it again it won't start then deleting the cached data can fix this.
-                // But, if there is cached data and things do work then the Tor OP will start faster than it would
-                // if we delete everything.
-                // So our compromise is that we try to start the Tor OP 'as is' on the first round and after that
-                // we delete all the files.
-                onionProxyContext.deleteAllFilesButHiddenServices();
             }
-
-            return false;
+            return started;
         } finally {
             // Make sure we return the Tor OP in some kind of consistent state, even if it's 'off'.
             if (!isRunning()) {
@@ -255,7 +233,7 @@ public abstract class OnionProxyManager {
      * @throws java.io.IOException - IO exceptions
      */
     public synchronized boolean isRunning() throws IOException {
-        return isBootstrapped() && isNetworkEnabled();
+        return isNetworkEnabled();
     }
 
     /**
@@ -279,7 +257,8 @@ public abstract class OnionProxyManager {
      */
     public synchronized boolean isNetworkEnabled() throws IOException {
         if (controlConnection == null) {
-            throw new RuntimeException("Tor is not running!");
+            Log.i("OnionProxyManager", "Tor is not running!");
+            return false;
         }
 
         List<ConfigEntry> disableNetworkSettingValues = controlConnection.getConf("DisableNetwork");

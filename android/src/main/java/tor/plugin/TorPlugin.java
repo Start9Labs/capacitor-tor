@@ -1,5 +1,7 @@
 package tor.plugin;
 
+import android.util.Log;
+
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
@@ -20,18 +22,20 @@ public class TorPlugin extends Plugin {
 
     @PluginMethod()
     public void start(PluginCall call) throws IOException, InterruptedException {
+        Log.d("TorPlugin", "Kicking off tor");
         Integer socksPort = call.getInt("socksPort");
         if(socksPort == null){
             socksPort = DEFAULT_SOCKS_PORT;
         }
 
-        getManager().startWithRepeat(
+        boolean startedSuccessfully = getManager().startWithRepeat(
             socksPort, 
             TOTAL_SECONDS_PER_TOR_STARTUP, 
             TOTAL_TRIES_PER_TOR_STARTUP,
             STARTUP_EVENT_HANDLER
         );
 
+        Log.d("TorPlugin", "Finishing off tor. Started successfully: " + startedSuccessfully);
         call.success();
     }
 
@@ -49,9 +53,9 @@ public class TorPlugin extends Plugin {
     public void reconnect(PluginCall call) throws IOException {
         OnionProxyManager manager = getManager();
         if(manager.isRunning()) {
-            System.out.println("Tor: reconnecting...");
+            Log.d("TorPlugin","Tor: reconnecting...");
             if (manager.reconnect()) {
-                System.out.println("Tor: reconnected");
+                Log.d("TorPlugin","Tor: reconnected");
                 call.success();
                 JSObject ret = new JSObject();
                 ret.put("success", true);
@@ -71,7 +75,7 @@ public class TorPlugin extends Plugin {
         OnionProxyManager manager = getManager();
         if(manager.isRunning()){
             if (manager.newnym()) {
-                System.out.println("Tor: successfully rebuilt tor circuit");
+                Log.d("TorPlugin","Tor: successfully rebuilt tor circuit");
                 call.success();
                 JSObject ret = new JSObject();
                 ret.put("success", true);
