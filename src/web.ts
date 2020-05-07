@@ -1,25 +1,32 @@
 import { Plugins } from '@capacitor/core'
 import { TorPlugin } from './definitions'
-import { Subject, Observable } from 'rxjs'
+import { Subject, Observable, interval } from 'rxjs'
 const { TorPlugin : TorNative } = Plugins;
 
 // Provides TS type safety for calling code.
 export class Tor implements TorPlugin {
   constructor() {}
 
-  start(opt?: { socksPort: number }): Observable<number> {
-    const initProgress = new Subject<number>()
-    
+  start(opt?: { socksPort: number, initTimeout?: number }): Observable<number> {
+    const initProgress$ = new Subject<number>()
+    const initTimeout = (opt || {}).initTimeout || 15000
+
+    interval(100).subscribe(i => {
+      if(i > initTimeout) {
+        initProgress$.error(`Tor failed to boostrap within ${initTimeout} ms.`)
+      }
+    })
+
     const eventListener = TorNative.addListener("torInitProgress", info => {
-      initProgress.next(Number(info.progress))
+      initProgress$.next(Number(info.progress))
       if(Number(info.progress) >= 100) { 
         eventListener.remove() 
-        initProgress.complete()
+        initProgress$.complete()
       }
     })
 
     TorNative.start(opt)
-    return initProgress
+    return initProgress$
   }
 
   stop(): Promise<void> {
