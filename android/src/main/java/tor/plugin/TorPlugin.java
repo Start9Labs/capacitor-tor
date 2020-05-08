@@ -52,41 +52,33 @@ public class TorPlugin extends Plugin {
     @PluginMethod()
     public void reconnect(PluginCall call) throws IOException {
         OnionProxyManager manager = getManager();
-        if(manager.isRunning()) {
-            Log.d("TorPlugin","Tor: reconnecting...");
-            if (manager.reconnect()) {
-                Log.d("TorPlugin","Tor: reconnected");
-                call.success();
-                JSObject ret = new JSObject();
-                ret.put("success", true);
-                notifyListeners("torReconnectSucceeded", ret);
-                return;
-            } else {
-                call.reject("Tor: Could not reconnect tor daemon");
-                return;
-            }
+        if(!manager.isRunning()){
+            call.success();
         }
-        call.success();
+
+        Log.d("TorPlugin","Tor: reconnecting...");
+        if (manager.reconnect()) {
+            Log.d("TorPlugin","Tor: reconnected");
+            call.success();
+        } else {
+            call.reject("Tor: Could not reconnect tor daemon");
+        }
     }
 
-    // Reset tor chain
     @PluginMethod()
     public void newnym(PluginCall call) throws IOException {
         OnionProxyManager manager = getManager();
-        if(manager.isRunning()){
-            if (manager.newnym()) {
-                Log.d("TorPlugin","Tor: successfully rebuilt tor circuit");
-                call.success();
-                JSObject ret = new JSObject();
-                ret.put("success", true);
-                notifyListeners("torReconnectSucceeded", ret);
-                return;
-            } else {
-                call.reject("Tor: Could not rebuild tor circuit");
-                return;
-            }
+        if(!manager.isRunning()){
+            call.success();
         }
-        call.success();
+
+        if (manager.newnym()) {
+            Log.d("TorPlugin","Tor: successfully rebuilt tor circuit");
+            call.success();
+        } else {
+            call.reject("Tor: Could not rebuild tor circuit");
+        }
+
     }
 
     @PluginMethod()

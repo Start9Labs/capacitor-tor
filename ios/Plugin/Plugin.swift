@@ -31,8 +31,7 @@ public class TorPlugin: CAPPlugin {
     
     //    stop()   : Promise<void>
     @objc func stop(_ call: CAPPluginCall) {
-        onionManager.stopTor()
-        call.resolve()
+        onionManager.stopTor(completion: call.resolve)
     }
 
     @objc func reconnect(_ call: CAPPluginCall) {
