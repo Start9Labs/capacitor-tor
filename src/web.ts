@@ -36,7 +36,7 @@ export class Tor implements TorPlugin {
   }
 
   reconnect(): Promise<void> {
-    return TorNative.reconnect()    
+    return TorNative.reconnect()
   }
 
   newnym(): Promise<void> {

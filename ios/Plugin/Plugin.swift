@@ -31,7 +31,7 @@ public class TorPlugin: CAPPlugin {
     
     //    stop()   : Promise<void>
     @objc func stop(_ call: CAPPluginCall) {
-        onionManager.stopTor(completion: call.resolve)
+        onionManager.stopTor(completion: {  call.resolve([:]) })
     }
 
     @objc func reconnect(_ call: CAPPluginCall) {
@@ -57,7 +57,7 @@ public class TorPlugin: CAPPlugin {
     func handleEstablished(_ call: CAPPluginCall, _ established: Bool, _ taskDesc: String) {
         if(established){
             CAPLog.print(taskDesc, "Completed")
-            call.resolve()
+            call.resolve([:])
         } else {
             CAPLog.print(taskDesc, "Failed")
             call.reject(taskDesc + " failed")
