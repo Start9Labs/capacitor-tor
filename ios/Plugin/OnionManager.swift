@@ -103,7 +103,7 @@ public class OnionManager: NSObject {
     func torReconnect(completion: @escaping (Bool) -> Void) {
         torController?.resetConnection(completion)
     }
-    
+
     func torNewnym(completion: @escaping (Bool) -> Void) {
         torController?.sendCommand("SIGNAL NEWNYM", arguments: nil, data: nil, observer: { codes, _, stop -> Bool in
             completion(codes.first?.intValue == 250)
@@ -250,7 +250,7 @@ public class OnionManager: NSObject {
     /**
      Experimental Tor shutdown.
      */
-    @objc func stopTor() {
+    @objc func stopTor(completion: @escaping () -> Void) {
         print("[\(String(describing: OnionManager.self))] #stopTor")
 
         // under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
@@ -267,6 +267,7 @@ public class OnionManager: NSObject {
         self.torThread?.cancel()
         self.torThread = nil
         self.state = .stopped
+        completion()
     }
     
     @objc func running() -> Bool {
