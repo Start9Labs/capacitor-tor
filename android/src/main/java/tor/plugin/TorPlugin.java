@@ -8,90 +8,105 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @NativePlugin()
 public class TorPlugin extends Plugin {
     private static final int TOTAL_SECONDS_PER_TOR_STARTUP = 240;
     private static final int TOTAL_TRIES_PER_TOR_STARTUP = 5;
     private static final int DEFAULT_SOCKS_PORT = 9050;
-
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
     private OnionProxyManager manager;
 
     @PluginMethod()
-    public void start(PluginCall call) throws IOException, InterruptedException {
-        Log.d("TorPlugin", "Kicking off tor");
-        Integer socksPort = call.getInt("socksPort");
-        if(socksPort == null){
-            socksPort = DEFAULT_SOCKS_PORT;
-        }
+    public void start(PluginCall call) {
+        executorService.execute(() -> {
+            Log.d("TorPlugin", "Kicking off tor");
+            Integer socksPort = call.getInt("socksPort");
+            if(socksPort == null){
+                socksPort = DEFAULT_SOCKS_PORT;
+            }
 
-        boolean startedSuccessfully = getManager().startWithRepeat(
-            socksPort, 
-            TOTAL_SECONDS_PER_TOR_STARTUP, 
-            TOTAL_TRIES_PER_TOR_STARTUP,
-            STARTUP_EVENT_HANDLER
-        );
-
-        Log.d("TorPlugin", "Finishing off tor. Started successfully: " + startedSuccessfully);
-        call.success();
+            boolean startedSuccessfully;
+            try {
+                startedSuccessfully = getManager().startWithRepeat(
+                        socksPort,
+                        TOTAL_SECONDS_PER_TOR_STARTUP,
+                        TOTAL_TRIES_PER_TOR_STARTUP,
+                        STARTUP_EVENT_HANDLER
+                );
+                Log.d("TorPlugin", "Finishing off tor. Started successfully: " + startedSuccessfully);
+                call.success();
+            } catch (Exception e) {
+                call.reject(e.getLocalizedMessage(), e);
+            }
+        });
     }
 
     // Kills running tor daemon
     @PluginMethod()
-    public void stop(PluginCall call) throws IOException {
-        OnionProxyManager manager = getManager();
-        if(manager.isRunning()){
-            manager.stop();
-        }
-        call.success();
+    public void stop(PluginCall call) {
+        executorService.execute(() -> {
+            OnionProxyManager manager = getManager();
+            if(isRunning(call)){
+                try {
+                    manager.stop();
+                } catch (IOException e) {
+                    call.reject(e.getLocalizedMessage(), e);
+                }
+            }
+            call.success();
+        });
+
     }
 
     @PluginMethod()
-    public void reconnect(PluginCall call) throws IOException {
-        OnionProxyManager manager = getManager();
-        if(manager.isRunning()) {
+    public void reconnect(PluginCall call) {
+        executorService.execute(() -> {
+            if(!isRunning(call)) {
+                call.success();
+            }
+
             Log.d("TorPlugin","Tor: reconnecting...");
-            if (manager.reconnect()) {
+            if (getManager().reconnect()) {
                 Log.d("TorPlugin","Tor: reconnected");
                 call.success();
-                JSObject ret = new JSObject();
-                ret.put("success", true);
-                notifyListeners("torReconnectSucceeded", ret);
-                return;
             } else {
                 call.reject("Tor: Could not reconnect tor daemon");
-                return;
             }
-        }
-        call.success();
+        });
     }
 
-    // Reset tor chain
     @PluginMethod()
-    public void newnym(PluginCall call) throws IOException {
-        OnionProxyManager manager = getManager();
-        if(manager.isRunning()){
-            if (manager.newnym()) {
+    public void newnym(PluginCall call) {
+        executorService.execute(() -> {
+            if(!isRunning(call)) {
+                call.success();
+            }
+
+            if (getManager().newnym()) {
                 Log.d("TorPlugin","Tor: successfully rebuilt tor circuit");
                 call.success();
-                JSObject ret = new JSObject();
-                ret.put("success", true);
-                notifyListeners("torReconnectSucceeded", ret);
-                return;
             } else {
                 call.reject("Tor: Could not rebuild tor circuit");
-                return;
             }
+        });
+    }
+
+    private boolean isRunning(PluginCall call) {
+        try {
+            return getManager().isRunning();
+        } catch (IOException e) {
+            call.reject(e.getLocalizedMessage(), e);
+            return false;
         }
-        call.success();
     }
 
     @PluginMethod()
-    public void running(PluginCall call) throws IOException {
-        boolean running = getManager().isRunning();
+    public void running(PluginCall call) {
+        boolean running = isRunning(call);
         JSObject object = new JSObject();
         object.put("running", running);
         call.success(object);
