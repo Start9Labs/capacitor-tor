@@ -43,7 +43,8 @@ export class Tor implements TorPlugin {
     return TorNative.newnym()
   }
   
-  running(): Promise<{running: boolean}> {
-    return TorNative.running()
+  async isRunning(): Promise<boolean> {
+    const res = await TorNative.isRunning()
+    return res.running
   }
 }

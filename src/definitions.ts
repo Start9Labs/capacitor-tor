@@ -11,5 +11,5 @@ export interface TorPlugin {
   start(opt?: { socksPort: number, initTimeout?: number }): Observable<number>
   stop()   : Promise<void>
   newnym() : Promise<void>
-  running(): Promise<{running: boolean}>
+  isRunning(): Promise<boolean>
 }
