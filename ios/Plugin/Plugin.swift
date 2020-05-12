@@ -49,8 +49,8 @@ public class TorPlugin: CAPPlugin {
         )
     }
 
-    //    running(): Promise<{running: boolean}>
-    @objc func running(_ call: CAPPluginCall) {
+    //    isRunning(): Promise<{running: boolean}>
+    @objc func isRunning(_ call: CAPPluginCall) {
         call.resolve(["running" : onionManager.running()])
     }
 

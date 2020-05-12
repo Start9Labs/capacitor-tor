@@ -19,6 +19,7 @@ public class TorPlugin extends Plugin {
     private static final int DEFAULT_SOCKS_PORT = 9050;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private OnionProxyManager manager;
+    private boolean started = false;
 
     @PluginMethod()
     public void start(PluginCall call) {
@@ -38,6 +39,7 @@ public class TorPlugin extends Plugin {
                         STARTUP_EVENT_HANDLER
                 );
                 Log.d("TorPlugin", "Finishing off tor. Started successfully: " + startedSuccessfully);
+                this.started = startedSuccessfully;
                 call.success();
             } catch (Exception e) {
                 call.reject(e.getLocalizedMessage(), e);
@@ -50,11 +52,13 @@ public class TorPlugin extends Plugin {
     public void stop(PluginCall call) {
         executorService.execute(() -> {
             OnionProxyManager manager = getManager();
-            if(isRunning(call)){
+            if(managerIsRunning(call)){
                 try {
                     manager.stop();
+                    this.started = false;
                 } catch (IOException e) {
                     call.reject(e.getLocalizedMessage(), e);
+                    return;
                 }
             }
             call.success();
@@ -65,7 +69,7 @@ public class TorPlugin extends Plugin {
     @PluginMethod()
     public void reconnect(PluginCall call) {
         executorService.execute(() -> {
-            if(!isRunning(call)) {
+            if(!managerIsRunning(call)) {
                 call.success();
             }
 
@@ -82,7 +86,7 @@ public class TorPlugin extends Plugin {
     @PluginMethod()
     public void newnym(PluginCall call) {
         executorService.execute(() -> {
-            if(!isRunning(call)) {
+            if(!managerIsRunning(call)) {
                 call.success();
             }
 
@@ -95,7 +99,7 @@ public class TorPlugin extends Plugin {
         });
     }
 
-    private boolean isRunning(PluginCall call) {
+    private boolean managerIsRunning(PluginCall call) {
         try {
             return getManager().isRunning();
         } catch (IOException e) {
@@ -105,10 +109,9 @@ public class TorPlugin extends Plugin {
     }
 
     @PluginMethod()
-    public void running(PluginCall call) {
-        boolean running = isRunning(call);
+    public void isRunning(PluginCall call) {
         JSObject object = new JSObject();
-        object.put("running", running);
+        object.put("running", this.started);
         call.success(object);
     }
 
