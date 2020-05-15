@@ -31,6 +31,27 @@ export class Tor implements TorPlugin {
     return initProgress$
   }
 
+  restart(opt?: { socksPort: number, initTimeout?: number }): Observable<number> {
+    const reinitProgress$ = new Subject<number>()
+    const reinitTimeout = opt && opt.initTimeout
+    const timeoutSub = of({}).pipe(delay(reinitTimeout)).subscribe(() => {
+      timeoutSub.unsubscribe()
+      reinitProgress$.error(`Tor failed to bootstrap within ${reinitTimeout} ms`)
+      this.stop()
+    })
+
+    TorNative.restart(opt).then(async () => {
+      reinitProgress$.next(20)
+      for (var i = 21; i <= 100; i++) {
+        await new Promise(res => setTimeout(res, 10))
+        reinitProgress$.next(i)
+      }
+      timeoutSub.unsubscribe()
+      reinitProgress$.complete()
+    })
+    return reinitProgress$
+  }
+
   stop(): Promise<void> {
     return TorNative.stop()
   }

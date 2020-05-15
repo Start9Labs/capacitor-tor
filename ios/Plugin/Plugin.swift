@@ -21,12 +21,17 @@ public class TorPlugin: CAPPlugin {
             switch result {
             case .success(let urlSessionConfiguration):
                 self.restClient = Rest.init(urlSessionConfiguration: urlSessionConfiguration)
-                call.resolve()
+                call.resolve([:])
             case .failure(let error):
                 call.error(error.localizedDescription)
             }
         })
         
+    }
+    
+    @objc func restart(_ call: CAPPluginCall) {
+        onionManager.state = .restarting
+        self.start(call)
     }
     
     //    stop()   : Promise<void>

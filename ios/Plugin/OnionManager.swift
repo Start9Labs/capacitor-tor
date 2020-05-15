@@ -18,6 +18,7 @@ public class OnionManager: NSObject {
     public enum TorState: Int {
         case none
         case started
+        case restarting
         case connected
         case stopped
     }
@@ -122,7 +123,9 @@ public class OnionManager: NSObject {
     func startTor(socksPort: Int, delegate: OnionManagerDelegate?) {
         cancelInitRetry()
         cancelFailGuard()
-        state = .started
+        if self.state == .none {
+            self.state = .started
+        }
 
         if (self.torController == nil) {
             self.torController = TorController(socketHost: "127.0.0.1", port: 9051)
@@ -188,7 +191,7 @@ public class OnionManager: NSObject {
                 if success {
                     var completeObs: Any?
                     completeObs = self.torController?.addObserver(forCircuitEstablished: { established in
-                        if established {
+                        func notifyConnected() {
                             self.state = .connected
                             self.torController?.removeObserver(completeObs)
                             self.cancelInitRetry()
@@ -200,6 +203,11 @@ public class OnionManager: NSObject {
                             self.torController?.getSessionConfiguration({ configuration in
                                 delegate?.torConnFinished(socksPort: socksPort, configuration: configuration!)
                             })
+                        }
+                        if established {
+                            notifyConnected()
+                        } else if self.state == .restarting {
+                            notifyConnected()
                         }
                     }) // torController.addObserver
                     var progressObs: Any?
@@ -261,12 +269,9 @@ public class OnionManager: NSObject {
         // under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
         // we actually rely on that to stop tor and reset the state of torController. (we can
         // SIGNAL SHUTDOWN here, but we can't reset the torController "isConnected" state.)
-        var confs: [Dictionary<String, String>] = []
-        confs.append(["key": "DisableNetwork", "value": "1"])
-        self.torController?.setConfs(confs, completion: { _, _ in })
-        
+
         self.torController?.disconnect()
-        
+
         while (Tor.TorThread.active != nil) {
             print("waiting for nil torthread")
             usleep(100000)
