@@ -1,12 +1,15 @@
 import { Plugins } from '@capacitor/core'
 import { TorPlugin } from './definitions'
-import { Subject, Observable, of } from 'rxjs'
+import { Subject, Observable, of, Subscription } from 'rxjs'
 import { delay } from 'rxjs/operators'
 const { TorPlugin : TorNative } = Plugins;
 
 // Provides TS type safety for calling code.
 export class Tor implements TorPlugin {
-  constructor() {}
+  private timeoutSubs: Subscription[] = []
+  constructor() {
+    console.log(`TIMEOUT SUBS: ${typeof this.timeoutSubs}`)
+  }
 
   start(opt?: { socksPort: number, initTimeout?: number }): Observable<number> {
     const initProgress$ = new Subject<number>()
@@ -17,6 +20,8 @@ export class Tor implements TorPlugin {
       initProgress$.error(`Tor failed to boostrap within ${initTimeout} ms.`)
       this.stop()
     })
+    console.log(`TIMEOUT SUBS VAL: ${this.timeoutSubs}`)
+    this.timeoutSubs.push(timeoutSub)
 
     const eventListener = TorNative.addListener("torInitProgress", info => {
       initProgress$.next(Number(info.progress))
@@ -39,6 +44,7 @@ export class Tor implements TorPlugin {
       reinitProgress$.error(`Tor failed to bootstrap within ${reinitTimeout} ms`)
       this.stop()
     })
+    this.timeoutSubs.push(timeoutSub)
 
     TorNative.restart(opt).then(async () => {
       reinitProgress$.next(20)
@@ -53,6 +59,8 @@ export class Tor implements TorPlugin {
   }
 
   stop(): Promise<void> {
+    this.timeoutSubs.forEach(sub => sub.unsubscribe())
+    this.timeoutSubs = []
     return TorNative.stop()
   }
 

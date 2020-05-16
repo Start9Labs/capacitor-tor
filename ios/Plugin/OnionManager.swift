@@ -272,14 +272,36 @@ public class OnionManager: NSObject {
 
         self.torController?.disconnect()
 
-        while (Tor.TorThread.active != nil) {
-            print("waiting for nil torthread")
-            usleep(100000)
-        }
-        
-        self.torController = nil
         // More cleanup
+        while (Tor.TorThread.active != nil) {
+            for _ in 1...10 {
+                if Tor.TorThread.active != nil {
+                    print("waiting for nil torthread")
+                    usleep(100000)
+                } else {
+                    break
+                }
+            }
+            if Tor.TorThread.active == nil { break }
+            if !(self.torController?.isConnected ?? false) {
+                do {
+                    try self.torController?.connect()
+                } catch {
+                    print("[\(String(describing: OnionManager.self))] error=\(error)")
+                }
+            }
+            let cookieURL = OnionManager.cfgDataDir.appendingPathComponent("control_auth_cookie")
+            let cookie = try! Data(contentsOf: cookieURL)
+            self.torController?.authenticate(with: cookie, completion: { success, _ in
+                if success {
+                    self.torController?.disconnect()
+                } else {
+                    print("COULD NOT REAUTHENTICATE")
+                }
+            })
+        }
         self.torThread?.cancel()
+        self.torController = nil
         self.torThread = nil
         self.state = .stopped
         completion()
