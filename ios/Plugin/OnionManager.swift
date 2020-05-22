@@ -213,6 +213,7 @@ public class OnionManager: NSObject {
                     var progressObs: Any?
                     progressObs = self.torController?.addObserver(forStatusEvents: {
                         (type: String, _: String, action: String, arguments: [String: String]?) -> Bool in
+                        print("type: \(type), action: \(action), arguments: \(arguments)")
 
                         if type == "STATUS_CLIENT" && action == "BOOTSTRAP" {
                             let progress = Int(arguments!["PROGRESS"]!)!
