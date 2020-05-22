@@ -18,7 +18,6 @@ public class OnionManager: NSObject {
     public enum TorState: Int {
         case none
         case started
-        case restarting
         case connected
         case stopped
     }
@@ -205,8 +204,6 @@ public class OnionManager: NSObject {
                             })
                         }
                         if established {
-                            notifyConnected()
-                        } else if self.state == .restarting {
                             notifyConnected()
                         }
                     }) // torController.addObserver

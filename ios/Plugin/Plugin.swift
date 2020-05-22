@@ -29,11 +29,6 @@ public class TorPlugin: CAPPlugin {
         
     }
     
-    @objc func restart(_ call: CAPPluginCall) {
-        onionManager.state = .restarting
-        self.start(call)
-    }
-    
     //    stop()   : Promise<void>
     @objc func stop(_ call: CAPPluginCall) {
         onionManager.stopTor(completion: {  call.resolve([:]) })
