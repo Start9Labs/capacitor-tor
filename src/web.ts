@@ -7,9 +7,7 @@ const { TorPlugin : TorNative } = Plugins;
 // Provides TS type safety for calling code.
 export class Tor implements TorPlugin {
   private timeoutSubs: Subscription[] = []
-  constructor() {
-    console.log(`TIMEOUT SUBS: ${typeof this.timeoutSubs}`)
-  }
+  constructor() {}
 
   start(opt?: { socksPort: number, initTimeout?: number }): Observable<number> {
     const initProgress$ = new Subject<number>()
@@ -20,7 +18,6 @@ export class Tor implements TorPlugin {
       initProgress$.error(`Tor failed to boostrap within ${initTimeout} ms.`)
       this.stop()
     })
-    console.log(`TIMEOUT SUBS VAL: ${this.timeoutSubs}`)
     this.timeoutSubs.push(timeoutSub)
 
     const eventListener = TorNative.addListener("torInitProgress", info => {

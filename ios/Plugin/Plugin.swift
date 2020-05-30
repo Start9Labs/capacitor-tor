@@ -9,7 +9,7 @@ import Tor
 @objc(TorPlugin)
 public class TorPlugin: CAPPlugin {
     var urlSessionConfiguration: URLSessionConfiguration? = nil
-    var restClient: Rest? = nil
+//    var restClient: Rest? = nil
     let onionConnector = OnionConnecter.init()
     let onionManager = OnionManager.shared
     
@@ -20,7 +20,7 @@ public class TorPlugin: CAPPlugin {
         }, completion: { result in
             switch result {
             case .success(let urlSessionConfiguration):
-                self.restClient = Rest.init(urlSessionConfiguration: urlSessionConfiguration)
+//                self.restClient = Rest.init(urlSessionConfiguration: urlSessionConfiguration)
                 call.resolve([:])
             case .failure(let error):
                 call.error(error.localizedDescription)
