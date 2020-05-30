@@ -1,11 +1,11 @@
 import { Plugins } from '@capacitor/core'
-import { TorPlugin } from './definitions'
+import { TorPluginContract } from './definitions'
 import { Subject, Observable, of, Subscription } from 'rxjs'
 import { delay } from 'rxjs/operators'
-const { TorPlugin : TorNative } = Plugins;
+const { TorPlugin } = Plugins
 
 // Provides TS type safety for calling code.
-export class Tor implements TorPlugin {
+export class Tor implements TorPluginContract {
   private timeoutSubs: Subscription[] = []
   constructor() {
     console.log(`TIMEOUT SUBS: ${typeof this.timeoutSubs}`)
@@ -23,7 +23,7 @@ export class Tor implements TorPlugin {
     console.log(`TIMEOUT SUBS VAL: ${this.timeoutSubs}`)
     this.timeoutSubs.push(timeoutSub)
 
-    const eventListener = TorNative.addListener("torInitProgress", info => {
+    const eventListener = TorPlugin.addListener("torInitProgress", info => {
       initProgress$.next(Number(info.progress))
       if(Number(info.progress) >= 100) { 
         timeoutSub.unsubscribe()
@@ -32,26 +32,26 @@ export class Tor implements TorPlugin {
       }
     })
 
-    TorNative.start(opt)
+    TorPlugin.start(opt)
     return initProgress$
   }
 
   stop(): Promise<void> {
     this.timeoutSubs.forEach(sub => sub.unsubscribe())
     this.timeoutSubs = []
-    return TorNative.stop()
+    return TorPlugin.stop()
   }
 
   reconnect(): Promise<void> {
-    return TorNative.reconnect()
+    return TorPlugin.reconnect()
   }
 
   newnym(): Promise<void> {
-    return TorNative.newnym()
+    return TorPlugin.newnym()
   }
   
   async isRunning(): Promise<boolean> {
-    const res = await TorNative.isRunning()
+    const res = await TorPlugin.isRunning()
     return res.running
   }
 }
