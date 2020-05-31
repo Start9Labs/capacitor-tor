@@ -1,16 +1,20 @@
 import { Observable } from "rxjs"
 
-// @ts-ignore
 declare module "@capacitor/core" {
   interface PluginRegistry {
-    TorPlugin: TorPluginContract;
+    TorPlugin: ITorPlugin
   }
 }
 
-export interface TorPluginContract {
-  start(opt?: { socksPort: number, initTimeout?: number }): Observable<number>
-  stop()   : Promise<void>
-  reconnect(): Promise<void>
-  newnym() : Promise<void>
-  isRunning(): Promise<boolean>
+export interface ITorPlugin {
+  start (options?: StartOptions): Observable<number>
+  stop (): Promise<void>
+  reconnect (): Promise<void>
+  newnym (): Promise<void>
+  isRunning (): Promise<boolean>
+}
+
+export interface StartOptions {
+  socksPort: number
+  initTimeout?: number
 }
