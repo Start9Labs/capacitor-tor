@@ -1,11 +1,11 @@
 import { Subject, Observable, of, Subscription } from 'rxjs'
 import { delay } from 'rxjs/operators'
-import { ITorPlugin } from './definitions'
 import { Plugins } from '@capacitor/core'
-const { TorPlugin } = Plugins
+import { ITorPlugin } from './definitions'
+const TorPlugin = Plugins['TorPlugin'] as ITorPlugin
 
 // Provides TS type safety for calling code.
-export class Tor implements ITorPlugin {
+export class Tor {
   private timeoutSubs: Subscription[] = []
   constructor() {
     console.log(`TIMEOUT SUBS: ${typeof this.timeoutSubs}`)

@@ -1,4 +1,5 @@
 import { Observable } from "rxjs"
+import { PluginListenerHandle } from "@capacitor/core"
 
 declare module "@capacitor/core" {
   interface PluginRegistry {
@@ -11,7 +12,8 @@ export interface ITorPlugin {
   stop (): Promise<void>
   reconnect (): Promise<void>
   newnym (): Promise<void>
-  isRunning (): Promise<boolean>
+  isRunning (): Promise<{ running: boolean }>
+  addListener (eventName: string, listenerFunc: Function): PluginListenerHandle
 }
 
 export interface StartOptions {
