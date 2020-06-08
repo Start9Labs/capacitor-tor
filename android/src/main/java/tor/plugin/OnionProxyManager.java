@@ -404,13 +404,18 @@ public abstract class OnionProxyManager {
             socksSocket = new Socket("127.0.0.1", socksPort);
 
             // Open a control connection and authenticate using the cookie file
+            System.out.println("Creating Control Connection");
             TorControlConnection controlConnection = new TorControlConnection(controlSocket);
+            System.out.println("Authenticating Cookie File");
             controlConnection.authenticate(FileUtilities.read(cookieFile));
             // Tell Tor to exit when the control connection is closed
 //            controlConnection.takeOwnership();
+            System.out.println("Authenticating Cookie File");
             controlConnection.resetConf(Collections.singletonList(OWNER));
             // Register to receive events from the Tor process
+            System.out.println("Setting Event Handler");
             controlConnection.setEventHandler(eventHandler);
+            System.out.println("Setting Events");
             controlConnection.setEvents(Arrays.asList(EVENTS));
 
             // We only set the class property once the connection is in a known good state
