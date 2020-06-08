@@ -86,7 +86,7 @@ public abstract class OnionProxyManager {
     // If controlConnection is not null then this means that a connection exists and the Tor OP will die when
     // the connection fails.
     private volatile TorControlConnection controlConnection = null;
-    private volatile int control_port;
+//    private volatile int control_port;
 
     public OnionProxyManager(OnionProxyContext onionProxyContext) {
         this.onionProxyContext = onionProxyContext;
@@ -371,8 +371,8 @@ public abstract class OnionProxyManager {
         try {
 //            torProcess = Runtime.getRuntime().exec(cmd, env, workingDirectory);
             torProcess = processBuilder.start();
-            CountDownLatch controlPortCountDownLatch = new CountDownLatch(1);
-            eatStream(torProcess.getInputStream(), false, controlPortCountDownLatch);
+//            CountDownLatch controlPortCountDownLatch = new CountDownLatch(1);
+            eatStream(torProcess.getInputStream(), false, null/*controlPortCountDownLatch*/);
             eatStream(torProcess.getErrorStream(), true, null);
             Log.d("TorPlugin", "Streams Eaten");
 
@@ -400,7 +400,7 @@ public abstract class OnionProxyManager {
             }
 
             // Now we should be able to connect to the new process
-            controlPortCountDownLatch.await();
+//            controlPortCountDownLatch.await();
             controlSocket = new Socket("127.0.0.1", controlPort);
             socksSocket = new Socket("127.0.0.1", socksPort);
 
@@ -500,10 +500,10 @@ public abstract class OnionProxyManager {
                             // Control listener listening on port 39717.
                             if (nextLine.contains("Control listener listening on port ")) {
                                 // For the record, I hate regex so I'm doing this manually
-                                control_port =
-                                        Integer.parseInt(
-                                                nextLine.substring(nextLine.lastIndexOf(" ") + 1, nextLine.length() - 1));
-                                countDownLatch.countDown();
+//                                control_port =
+//                                        Integer.parseInt(
+//                                                nextLine.substring(nextLine.lastIndexOf(" ") + 1, nextLine.length() - 1));
+//                                countDownLatch.countDown();
                             }
                             LOG.info(nextLine);
                         }
