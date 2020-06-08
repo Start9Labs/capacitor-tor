@@ -67,7 +67,7 @@ public class OnionManager: NSObject {
         return authDir
     }();
     
-    private static func mkTorConfig(socksport: Int) -> TorConfiguration {
+    private static func mkTorConfig(socksPort: Int, controlPort: Int) -> TorConfiguration {
         // Configure tor and return the configuration object
         let configuration = TorConfiguration()
         configuration.cookieAuthentication = true
@@ -75,10 +75,10 @@ public class OnionManager: NSObject {
         let config_args = [
             "--allow-missing-torrc",
             "--ignore-missing-torrc",
-            "--controlport", "127.0.0.1:9051",
+            "--controlport", "127.0.0.1:\(controlPort)",
             "--log", cfgLogLocation,
             "--ClientOnionAuthDir", cfgAuthDir.path,
-            "--socksport", "127.0.0.1:\(socksport)"
+            "--socksport", "127.0.0.1:\(socksPort)"
         ]
         configuration.arguments = config_args
         return configuration
@@ -119,7 +119,7 @@ public class OnionManager: NSObject {
         })
     }
 
-    func startTor(socksPort: Int, delegate: OnionManagerDelegate?) {
+    func startTor(socksPort: Int, controlPort: Int, delegate: OnionManagerDelegate?) {
         cancelInitRetry()
         cancelFailGuard()
         if self.state == .none {
@@ -138,7 +138,7 @@ public class OnionManager: NSObject {
         if ((self.torThread == nil) || (self.torThread?.isCancelled ?? true)) {
             self.torThread = nil
 
-            let torConf = OnionManager.mkTorConfig(socksport: socksPort)
+            let torConf = OnionManager.mkTorConfig(socksPort: socksPort, controlPort: controlPort)
 
             #if DEBUG
             dump("\n\n\(String(describing: torConf.arguments))\n\n")

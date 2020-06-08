@@ -17,6 +17,7 @@ public class TorPlugin extends Plugin {
     private static final int TOTAL_SECONDS_PER_TOR_STARTUP = 240;
     private static final int TOTAL_TRIES_PER_TOR_STARTUP = 5;
     private static final int DEFAULT_SOCKS_PORT = 9050;
+    private static final int DEFAULT_CONTROL_PORT = 9051;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
     private OnionProxyManager manager;
     private boolean started = false;
@@ -26,14 +27,19 @@ public class TorPlugin extends Plugin {
         executorService.execute(() -> {
             Log.d("TorPlugin", "Kicking off tor");
             Integer socksPort = call.getInt("socksPort");
+            Integer controlPort = call.getInt(("controlPort"));
             if(socksPort == null){
                 socksPort = DEFAULT_SOCKS_PORT;
+            }
+            if (controlPort == null) {
+                controlPort = DEFAULT_CONTROL_PORT;
             }
 
             boolean startedSuccessfully;
             try {
                 startedSuccessfully = getManager().startWithRepeat(
                         socksPort,
+                        controlPort,
                         TOTAL_SECONDS_PER_TOR_STARTUP,
                         TOTAL_TRIES_PER_TOR_STARTUP,
                         STARTUP_EVENT_HANDLER

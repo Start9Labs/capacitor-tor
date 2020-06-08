@@ -15,7 +15,8 @@ public class TorPlugin: CAPPlugin {
     
     @objc func start(_ call: CAPPluginCall) {
         let socksPort = call.getInt("socksPort") ?? 9050
-        onionConnector.start(manager: onionManager, socksPort: socksPort, progress: { (i: Int) in
+        let controlPort = call.getInt("controlPort") ?? 9051
+        onionConnector.start(manager: onionManager, socksPort: socksPort, controlPort: controlPort, progress: { (i: Int) in
             self.notifyListeners("torInitProgress", data: ["progress" : String(i)])
         }, completion: { result in
             switch result {

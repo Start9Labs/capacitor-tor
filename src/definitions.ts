@@ -8,15 +8,16 @@ declare module "@capacitor/core" {
 }
 
 export interface ITorPlugin {
-  start (options?: StartOptions): Observable<number>
-  stop (): Promise<void>
-  reconnect (): Promise<void>
-  newnym (): Promise<void>
-  isRunning (): Promise<{ running: boolean }>
-  addListener (eventName: string, listenerFunc: Function): PluginListenerHandle
+  start(options?: StartOptions): Observable<number>
+  stop(): Promise<void>
+  reconnect(): Promise<void>
+  newnym(): Promise<void>
+  isRunning(): Promise<{ running: boolean }>
+  addListener(eventName: string, listenerFunc: Function): PluginListenerHandle
 }
 
 export interface StartOptions {
   socksPort: number
+  controlPort: number
   initTimeout?: number
 }

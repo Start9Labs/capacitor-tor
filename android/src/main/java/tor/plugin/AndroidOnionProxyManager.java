@@ -63,8 +63,8 @@ public class AndroidOnionProxyManager extends OnionProxyManager {
     }
 
     @Override
-    public boolean installAndStartTorOp(int socksPort) throws IOException, InterruptedException {
-        if (super.installAndStartTorOp(socksPort)) {
+    public boolean installAndStartTorOp(int socksPort, int controlPort) throws IOException, InterruptedException {
+        if (super.installAndStartTorOp(socksPort, controlPort)) {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             context.registerReceiver(new ConnectionChangeReceiver(), intentFilter);

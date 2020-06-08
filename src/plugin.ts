@@ -11,7 +11,7 @@ export class Tor {
     console.log(`TIMEOUT SUBS: ${typeof this.timeoutSubs}`)
   }
 
-  start(opt?: { socksPort: number, initTimeout?: number }): Observable<number> {
+  start(opt?: { socksPort: number, controlPort: number, initTimeout?: number }): Observable<number> {
     const initProgress$ = new Subject<number>()
     const initTimeout = opt && opt.initTimeout
 
@@ -25,9 +25,9 @@ export class Tor {
 
     const eventListener = TorPlugin.addListener("torInitProgress", info => {
       initProgress$.next(Number(info.progress))
-      if(Number(info.progress) >= 100) { 
+      if (Number(info.progress) >= 100) {
         timeoutSub.unsubscribe()
-        eventListener.remove() 
+        eventListener.remove()
         initProgress$.complete()
       }
     })
@@ -49,7 +49,7 @@ export class Tor {
   newnym(): Promise<void> {
     return TorPlugin.newnym()
   }
-  
+
   async isRunning(): Promise<boolean> {
     const res = await TorPlugin.isRunning()
     return res.running

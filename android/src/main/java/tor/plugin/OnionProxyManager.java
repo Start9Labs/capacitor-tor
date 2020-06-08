@@ -106,6 +106,7 @@ public abstract class OnionProxyManager {
      */
     public synchronized boolean startWithRepeat(
             int socksPort,
+            int controlPort,
             int secondsBeforeTimeOut,
             int numberOfRetries,
             EventHandler eventHandler
@@ -117,7 +118,7 @@ public abstract class OnionProxyManager {
 
         try {
             for(int retryCount = 0; retryCount < numberOfRetries; ++retryCount) {
-                if (!installAndStartTorOp(socksPort)) {
+                if (!installAndStartTorOp(socksPort, controlPort)) {
                     return false;
                 }
                 enableNetwork(true);
@@ -328,7 +329,7 @@ public abstract class OnionProxyManager {
      * @throws java.io.IOException - IO Exceptions
      * @throws java.lang.InterruptedException - If we are, well, interrupted
      */
-    public synchronized boolean installAndStartTorOp(int socksPort) throws IOException, InterruptedException {
+    public synchronized boolean installAndStartTorOp(int socksPort, int controlPort) throws IOException, InterruptedException {
         // The Tor OP will die if it looses the connection to its socket so if there is no controlSocket defined
         // then Tor is dead. This assumes, of course, that takeOwnership works and we can't end up with Zombies.
         if (controlConnection != null) {
@@ -363,7 +364,7 @@ public abstract class OnionProxyManager {
         String torPath = onionProxyContext.getTorExecutableFile().getAbsolutePath();
         String configPath = onionProxyContext.getTorrcFile().getAbsolutePath();
         String pid = onionProxyContext.getProcessId();
-        String[] cmd = { torPath, "-f", configPath, "--socksport", String.valueOf(socksPort), OWNER, pid };
+        String[] cmd = { torPath, "-f", configPath, "--socksport", String.valueOf(socksPort), "--controlport", String.valueOf(controlPort), OWNER, pid };
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
         onionProxyContext.setEnvironmentArgsAndWorkingDirectoryForStart(processBuilder);
         Process torProcess = null;
