@@ -494,6 +494,7 @@ public abstract class OnionProxyManager {
                             LOG.error(scanner.nextLine());
                         } else {
                             String nextLine = scanner.nextLine();
+                            Log.d("TorPlugin", nextLine);
                             // We need to find the line where it tells us what the control port is.
                             // The line that will appear in stdio with the control port looks like:
                             // Control listener listening on port 39717.
