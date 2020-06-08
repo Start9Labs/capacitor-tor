@@ -374,6 +374,7 @@ public abstract class OnionProxyManager {
             CountDownLatch controlPortCountDownLatch = new CountDownLatch(1);
             eatStream(torProcess.getInputStream(), false, controlPortCountDownLatch);
             eatStream(torProcess.getErrorStream(), true, null);
+            Log.d("TorPlugin", "Streams Eaten");
 
             // On platforms other than Windows we run as a daemon and so we need to wait for the process to detach
             // or exit. In the case of Windows the equivalent is running as a service and unfortunately that requires
@@ -400,7 +401,7 @@ public abstract class OnionProxyManager {
 
             // Now we should be able to connect to the new process
             controlPortCountDownLatch.await();
-            controlSocket = new Socket("127.0.0.1", control_port);
+            controlSocket = new Socket("127.0.0.1", controlPort);
             socksSocket = new Socket("127.0.0.1", socksPort);
 
             // Open a control connection and authenticate using the cookie file
