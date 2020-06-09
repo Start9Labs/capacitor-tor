@@ -1,6 +1,6 @@
 {
-  "name": "capacitor-tor",
-  "version": "0.0.13",
+  "name": "@start9labs/capacitor-tor",
+  "version": "0.1.0",
   "description": "tor plugin for the capacitor",
   "author": "Start9 Labs, LLC",
   "license": "MIT",
