@@ -2,6 +2,9 @@
   "name": "capacitor-tor",
   "version": "0.0.13",
   "description": "tor plugin for the capacitor",
+  "author": "Start9 Labs, LLC",
+  "license": "MIT",
+  "homepage": "https://start9labs.com",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
@@ -12,8 +15,6 @@
     "prepublishOnly": "npm run build",
     "test": "jest"
   },
-  "author": "AGSpan",
-  "license": "MIT",
   "dependencies": {
     "@capacitor/core": "latest",
     "rxjs": "^6.5.5"
