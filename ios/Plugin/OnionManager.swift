@@ -127,7 +127,7 @@ public class OnionManager: NSObject {
         }
 
         if (self.torController == nil) {
-            self.torController = TorController(socketHost: "127.0.0.1", port: controlPort)
+            self.torController = TorController(socketHost: "127.0.0.1", port: UInt16(controlPort))
         }
 
         reachability = try? Reachability()
