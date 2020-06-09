@@ -86,7 +86,6 @@ public abstract class OnionProxyManager {
     // If controlConnection is not null then this means that a connection exists and the Tor OP will die when
     // the connection fails.
     private volatile TorControlConnection controlConnection = null;
-//    private volatile int control_port;
 
     public OnionProxyManager(OnionProxyContext onionProxyContext) {
         this.onionProxyContext = onionProxyContext;
@@ -369,12 +368,7 @@ public abstract class OnionProxyManager {
         onionProxyContext.setEnvironmentArgsAndWorkingDirectoryForStart(processBuilder);
         Process torProcess = null;
         try {
-//            torProcess = Runtime.getRuntime().exec(cmd, env, workingDirectory);
             torProcess = processBuilder.start();
-//            CountDownLatch controlPortCountDownLatch = new CountDownLatch(1);
-            eatStream(torProcess.getInputStream(), false, null/*controlPortCountDownLatch*/);
-            eatStream(torProcess.getErrorStream(), true, null);
-            Log.d("TorPlugin", "Streams Eaten");
 
             // On platforms other than Windows we run as a daemon and so we need to wait for the process to detach
             // or exit. In the case of Windows the equivalent is running as a service and unfortunately that requires
@@ -400,23 +394,16 @@ public abstract class OnionProxyManager {
             }
 
             // Now we should be able to connect to the new process
-//            controlPortCountDownLatch.await();
             controlSocket = new Socket("127.0.0.1", controlPort);
             socksSocket = new Socket("127.0.0.1", socksPort);
 
             // Open a control connection and authenticate using the cookie file
-            Log.d("TorPlugin", "Creating Control Connection");
             TorControlConnection controlConnection = new TorControlConnection(controlSocket);
-            Log.d("TorPlugin", "Authenticating Cookie File");
             controlConnection.authenticate(FileUtilities.read(cookieFile));
             // Tell Tor to exit when the control connection is closed
-//            controlConnection.takeOwnership();
-            Log.d("TorPlugin", "Authenticating Cookie File");
             controlConnection.resetConf(Collections.singletonList(OWNER));
             // Register to receive events from the Tor process
-            Log.d("TorPlugin", "Setting Event Handler");
             controlConnection.setEventHandler(eventHandler);
-            Log.d("TorPlugin", "Setting Events");
             controlConnection.setEvents(Arrays.asList(EVENTS));
 
             // We only set the class property once the connection is in a known good state
@@ -481,42 +468,6 @@ public abstract class OnionProxyManager {
             e.printStackTrace();
             return false;
         }
-    }
-
-    protected void eatStream(final InputStream inputStream, final boolean stdError, final CountDownLatch countDownLatch) {
-        new Thread() {
-            @Override
-            public void run() {
-                Scanner scanner = new Scanner(inputStream);
-                try {
-                    while(scanner.hasNextLine()) {
-                        if (stdError) {
-                            LOG.error(scanner.nextLine());
-                        } else {
-                            String nextLine = scanner.nextLine();
-                            Log.d("TorPlugin", nextLine);
-                            // We need to find the line where it tells us what the control port is.
-                            // The line that will appear in stdio with the control port looks like:
-                            // Control listener listening on port 39717.
-                            if (nextLine.contains("Control listener listening on port ")) {
-                                // For the record, I hate regex so I'm doing this manually
-//                                control_port =
-//                                        Integer.parseInt(
-//                                                nextLine.substring(nextLine.lastIndexOf(" ") + 1, nextLine.length() - 1));
-//                                countDownLatch.countDown();
-                            }
-                            LOG.info(nextLine);
-                        }
-                    }
-                } finally {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        LOG.error("Couldn't close input stream in eatStream", e);
-                    }
-                }
-            }
-        }.start();
     }
 
     protected synchronized void installAndConfigureFiles() throws IOException, InterruptedException {
