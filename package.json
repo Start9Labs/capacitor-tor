@@ -12,7 +12,7 @@
     "prepublishOnly": "npm run build",
     "test": "jest"
   },
-  "author": "AGSpan",
+  "author": "Start9 Labs, LLC",
   "license": "MIT",
   "dependencies": {
     "@capacitor/core": "latest",
