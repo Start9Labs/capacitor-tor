@@ -43,7 +43,7 @@ Sample use in an ionic app:
 
 ```
 import { Component } from '@angular/core';
-import { Tor, HttpVerb, JSON_ } from 'capacitor-tor';
+import { Tor } from 'capacitor-tor';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
