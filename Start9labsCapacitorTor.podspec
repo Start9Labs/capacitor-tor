@@ -1,7 +1,7 @@
 
   Pod::Spec.new do |s|
     s.name = 'Start9labsCapacitorTor'
-    s.version = '0.1.3'
+    s.version = '0.1.4'
     s.summary = 'run tor process on native ios'
     s.license = 'MIT'
     s.homepage = 'git@github.com:Start9Labs/capacitor-tor.git'
