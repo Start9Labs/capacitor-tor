@@ -1,8 +1,8 @@
 {
   "name": "@start9labs/capacitor-tor",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "tor plugin for the capacitor",
-  "author": "Start9 Labs, LLC",
+  "author": "Start9 Labs, Inc",
   "license": "MIT",
   "homepage": "https://start9labs.com",
   "main": "dist/esm/index.js",
@@ -12,21 +12,17 @@
     "build": "npm run clean && tsc",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build",
-    "test": "jest"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@capacitor/core": "latest",
-    "rxjs": "^6.5.5"
+    "rxjs": "^6.6.0"
   },
   "devDependencies": {
-    "@capacitor/android": "latest",
-    "@capacitor/ios": "latest",
-    "@types/jest": "^25.1.4",
-    "@types/node": "^13.9.5",
-    "jest": "^26.0.0",
+    "@capacitor/android": "^2.4.1",
+    "@capacitor/ios": "^2.4.1",
+    "@types/node": "^14.6.0",
     "rimraf": "^3.0.0",
-    "ts-jest": "^26.0.0",
     "typescript": "^3.9.0"
   },
   "files": [
