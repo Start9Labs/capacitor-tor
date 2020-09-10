@@ -29,7 +29,7 @@
     "dist/",
     "ios/",
     "android/",
-    "CapacitorTor.podspec"
+    "Start9labsCapacitorTor.podspec"
   ],
   "keywords": [
     "capacitor",
